@@ -1,0 +1,1139 @@
+{
+ "app": "segundos-rhythm",
+ "version": 1,
+ "exportedAt": "2026-09-21T18:06:17.903Z",
+ "config": {
+  "name": "Segundo",
+  "ageMonths": 4,
+  "breedSize": "small"
+ },
+ "days": [
+  {
+   "date": "2026-09-13",
+   "events": [
+    {
+     "at": 1789322400000,
+     "id": "seg001",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-14",
+   "events": [
+    {
+     "at": 1789362900000,
+     "id": "seg002",
+     "type": "wake"
+    },
+    {
+     "at": 1789363200000,
+     "id": "seg003",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789363800000,
+     "id": "seg004",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789365000000,
+     "food": "Kibble",
+     "id": "seg005",
+     "type": "food"
+    },
+    {
+     "at": 1789365600000,
+     "id": "seg006",
+     "type": "sleep"
+    },
+    {
+     "at": 1789366200000,
+     "id": "seg007",
+     "type": "wake"
+    },
+    {
+     "at": 1789371000000,
+     "id": "seg008",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789371900000,
+     "id": "seg009",
+     "type": "sleep"
+    },
+    {
+     "at": 1789373700000,
+     "id": "seg010",
+     "type": "wake"
+    },
+    {
+     "at": 1789375500000,
+     "food": "Meat",
+     "id": "seg011",
+     "type": "food"
+    },
+    {
+     "at": 1789380900000,
+     "id": "seg012",
+     "type": "sleep"
+    },
+    {
+     "at": 1789387800000,
+     "id": "seg013",
+     "type": "wake"
+    },
+    {
+     "at": 1789388700000,
+     "id": "seg014",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789389600000,
+     "id": "seg015",
+     "type": "sleep"
+    },
+    {
+     "at": 1789391700000,
+     "id": "seg016",
+     "type": "wake"
+    },
+    {
+     "at": 1789391700000,
+     "food": "Kibble",
+     "id": "seg017",
+     "type": "food"
+    },
+    {
+     "at": 1789392600000,
+     "id": "seg524",
+     "kind": "Forest",
+     "note": "estimated start",
+     "type": "walk"
+    },
+    {
+     "at": 1789397700000,
+     "id": "seg018",
+     "note": "estimated — forest walk, exact time unknown",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789403400000,
+     "id": "seg525",
+     "note": "estimated end",
+     "type": "home"
+    },
+    {
+     "at": 1789404000000,
+     "food": "Meat",
+     "id": "seg019",
+     "type": "food"
+    },
+    {
+     "at": 1789404300000,
+     "id": "seg020",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789405200000,
+     "id": "seg021",
+     "place": "Inside",
+     "type": "poop"
+    },
+    {
+     "at": 1789405800000,
+     "id": "seg022",
+     "type": "sleep"
+    },
+    {
+     "at": 1789411500000,
+     "id": "seg023",
+     "type": "wake"
+    },
+    {
+     "at": 1789411800000,
+     "id": "seg024",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789419600000,
+     "id": "seg025",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789419900000,
+     "id": "seg101",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-15",
+   "events": [
+    {
+     "at": 1789440300000,
+     "id": "seg102",
+     "type": "wake"
+    },
+    {
+     "at": 1789440600000,
+     "id": "seg103",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789440900000,
+     "id": "seg104",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789441200000,
+     "id": "seg105",
+     "note": "back in the crate",
+     "type": "sleep"
+    },
+    {
+     "at": 1789450800000,
+     "id": "seg106",
+     "type": "wake"
+    },
+    {
+     "at": 1789451100000,
+     "id": "seg107",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789451400000,
+     "food": "Kibble",
+     "id": "seg108",
+     "type": "food"
+    },
+    {
+     "at": 1789452900000,
+     "food": "Kibble",
+     "id": "seg109",
+     "note": "a little more",
+     "type": "food"
+    },
+    {
+     "at": 1789453200000,
+     "id": "seg110",
+     "type": "sleep"
+    },
+    {
+     "at": 1789455600000,
+     "id": "seg111",
+     "type": "wake"
+    },
+    {
+     "at": 1789455900000,
+     "id": "seg112",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789461900000,
+     "food": "Meat",
+     "id": "seg113",
+     "type": "food"
+    },
+    {
+     "at": 1789465500000,
+     "id": "seg114",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789466400000,
+     "id": "seg115",
+     "place": "Inside",
+     "type": "poop"
+    },
+    {
+     "at": 1789468200000,
+     "id": "seg116",
+     "type": "sleep"
+    },
+    {
+     "at": 1789477800000,
+     "id": "seg117",
+     "type": "wake"
+    },
+    {
+     "at": 1789478100000,
+     "id": "seg118",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789483500000,
+     "id": "seg119",
+     "type": "sleep"
+    },
+    {
+     "at": 1789489800000,
+     "id": "seg120",
+     "note": "estimated — exact wake time unknown",
+     "type": "wake"
+    },
+    {
+     "at": 1789491600000,
+     "food": "Meat",
+     "id": "seg121",
+     "type": "food"
+    },
+    {
+     "at": 1789495200000,
+     "id": "seg122",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789496100000,
+     "id": "seg123",
+     "type": "sleep"
+    },
+    {
+     "at": 1789502400000,
+     "id": "seg124",
+     "type": "wake"
+    },
+    {
+     "at": 1789503000000,
+     "id": "seg125",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789503120000,
+     "id": "seg126",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789503300000,
+     "id": "seg127",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "events": [
+    {
+     "at": 1789535700000,
+     "id": "seg201",
+     "type": "wake"
+    },
+    {
+     "at": 1789536000000,
+     "id": "seg202",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789536600000,
+     "food": "Kibble",
+     "id": "seg203",
+     "type": "food"
+    },
+    {
+     "at": 1789538400000,
+     "id": "seg204",
+     "type": "sleep"
+    },
+    {
+     "at": 1789542000000,
+     "id": "seg205",
+     "type": "wake"
+    },
+    {
+     "at": 1789543200000,
+     "id": "seg206",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789545000000,
+     "id": "seg207",
+     "place": "Inside",
+     "type": "poop"
+    },
+    {
+     "at": 1789546500000,
+     "id": "seg208",
+     "type": "sleep"
+    },
+    {
+     "at": 1789549200000,
+     "id": "seg209",
+     "type": "wake"
+    },
+    {
+     "at": 1789549200000,
+     "food": "Meat",
+     "id": "seg210",
+     "type": "food"
+    },
+    {
+     "at": 1789549800000,
+     "id": "seg211",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789550100000,
+     "id": "seg526",
+     "kind": "Street",
+     "type": "walk"
+    },
+    {
+     "at": 1789551900000,
+     "id": "seg527",
+     "type": "home"
+    },
+    {
+     "at": 1789553400000,
+     "id": "seg212",
+     "note": "after a 30-minute walk",
+     "type": "sleep"
+    },
+    {
+     "at": 1789557600000,
+     "id": "seg213",
+     "type": "wake"
+    },
+    {
+     "at": 1789558200000,
+     "id": "seg214",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789558500000,
+     "id": "seg215",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789560900000,
+     "id": "seg216",
+     "type": "sleep"
+    },
+    {
+     "at": 1789563600000,
+     "id": "seg217",
+     "type": "wake"
+    },
+    {
+     "at": 1789563600000,
+     "id": "seg218",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789563600000,
+     "food": "Kibble",
+     "id": "seg219",
+     "type": "food"
+    },
+    {
+     "at": 1789569600000,
+     "id": "seg220",
+     "type": "sleep"
+    },
+    {
+     "at": 1789570800000,
+     "id": "seg221",
+     "type": "wake"
+    },
+    {
+     "at": 1789572600000,
+     "id": "seg222",
+     "note": "estimated — gap in the log",
+     "type": "sleep"
+    },
+    {
+     "at": 1789578000000,
+     "id": "seg223",
+     "note": "estimated — gap in the log",
+     "type": "wake"
+    },
+    {
+     "at": 1789578000000,
+     "food": "Meat",
+     "id": "seg224",
+     "note": "estimated from his usual routine",
+     "type": "food"
+    },
+    {
+     "at": 1789581600000,
+     "id": "seg225",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789584000000,
+     "id": "seg226",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-17",
+   "events": [
+    {
+     "at": 1789621800000,
+     "id": "seg301",
+     "type": "wake"
+    },
+    {
+     "at": 1789622700000,
+     "id": "seg302",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789624800000,
+     "food": "Kibble",
+     "id": "seg303",
+     "type": "food"
+    },
+    {
+     "at": 1789626600000,
+     "id": "seg304",
+     "type": "sleep"
+    },
+    {
+     "at": 1789633800000,
+     "id": "seg305",
+     "type": "wake"
+    },
+    {
+     "at": 1789635000000,
+     "id": "seg306",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789635600000,
+     "food": "Meat",
+     "id": "seg307",
+     "type": "food"
+    },
+    {
+     "at": 1789636500000,
+     "id": "seg308",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789638600000,
+     "id": "seg309",
+     "type": "sleep"
+    },
+    {
+     "at": 1789642800000,
+     "id": "seg310",
+     "type": "wake"
+    },
+    {
+     "at": 1789648200000,
+     "id": "seg311",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789649100000,
+     "id": "seg312",
+     "type": "sleep"
+    },
+    {
+     "at": 1789654800000,
+     "id": "seg313",
+     "note": "last known event — rest of Thursday not logged",
+     "type": "wake"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-18",
+   "events": [
+    {
+     "at": 1789707900000,
+     "id": "seg401",
+     "type": "wake"
+    },
+    {
+     "at": 1789708200000,
+     "id": "seg402",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789708260000,
+     "id": "seg403",
+     "place": "Downstairs",
+     "type": "poop"
+    },
+    {
+     "at": 1789709700000,
+     "id": "seg404",
+     "place": "Inside",
+     "type": "poop"
+    },
+    {
+     "at": 1789710000000,
+     "id": "seg405",
+     "type": "sleep"
+    },
+    {
+     "at": 1789714200000,
+     "id": "seg406",
+     "type": "wake"
+    },
+    {
+     "at": 1789714500000,
+     "id": "seg407",
+     "place": "Downstairs",
+     "quality": "Diarrhea",
+     "type": "poop"
+    },
+    {
+     "at": 1789714800000,
+     "food": "Kibble",
+     "id": "seg408",
+     "type": "food"
+    },
+    {
+     "at": 1789715100000,
+     "id": "seg409",
+     "place": "Inside",
+     "quality": "Diarrhea",
+     "type": "poop"
+    },
+    {
+     "at": 1789719000000,
+     "id": "seg410",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789723800000,
+     "food": "Meat",
+     "id": "seg411",
+     "type": "food"
+    },
+    {
+     "at": 1789724700000,
+     "id": "seg412",
+     "place": "Terrace",
+     "quality": "Normal",
+     "type": "poop"
+    },
+    {
+     "at": 1789725600000,
+     "id": "seg413",
+     "type": "sleep"
+    },
+    {
+     "at": 1789730400000,
+     "id": "seg414",
+     "type": "wake"
+    },
+    {
+     "at": 1789735500000,
+     "id": "seg415",
+     "type": "sleep"
+    },
+    {
+     "at": 1789740000000,
+     "id": "seg416",
+     "type": "wake"
+    },
+    {
+     "at": 1789740000000,
+     "food": "Kibble",
+     "id": "seg417",
+     "type": "food"
+    },
+    {
+     "at": 1789754100000,
+     "food": "Meat",
+     "id": "seg418",
+     "type": "food"
+    },
+    {
+     "at": 1789754400000,
+     "id": "seg419",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789765200000,
+     "id": "seg420",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789765500000,
+     "id": "seg421",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-19",
+   "events": [
+    {
+     "at": 1789794900000,
+     "id": "seg501",
+     "type": "wake"
+    },
+    {
+     "at": 1789796100000,
+     "id": "seg502",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789796160000,
+     "id": "seg503",
+     "place": "Downstairs",
+     "type": "poop"
+    },
+    {
+     "at": 1789797600000,
+     "food": "Kibble",
+     "id": "seg504",
+     "note": "ate between 08:00 and 09:00",
+     "type": "food"
+    },
+    {
+     "at": 1789801800000,
+     "id": "seg505",
+     "type": "sleep"
+    },
+    {
+     "at": 1789805400000,
+     "id": "seg506",
+     "type": "wake"
+    },
+    {
+     "at": 1789805400000,
+     "id": "seg507",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789806000000,
+     "food": "Meat",
+     "id": "seg508",
+     "type": "food"
+    },
+    {
+     "at": 1789806600000,
+     "id": "seg509",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789807200000,
+     "id": "seg510",
+     "kind": "Puppy class",
+     "note": "estimated start — puppy course",
+     "type": "walk"
+    },
+    {
+     "at": 1789813800000,
+     "id": "seg511",
+     "note": "estimated end — puppy course",
+     "type": "home"
+    },
+    {
+     "at": 1789814700000,
+     "id": "seg512",
+     "type": "sleep"
+    },
+    {
+     "at": 1789822800000,
+     "id": "seg513",
+     "type": "wake"
+    },
+    {
+     "at": 1789823700000,
+     "id": "seg514",
+     "note": "by the elevator",
+     "place": "Accident",
+     "type": "pee"
+    },
+    {
+     "at": 1789826400000,
+     "id": "seg515",
+     "type": "sleep"
+    },
+    {
+     "at": 1789830000000,
+     "id": "seg516",
+     "type": "wake"
+    },
+    {
+     "at": 1789832100000,
+     "id": "seg517",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789834200000,
+     "id": "seg518",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789835700000,
+     "id": "seg519",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789836300000,
+     "food": "Meat",
+     "id": "seg520",
+     "type": "food"
+    },
+    {
+     "at": 1789839000000,
+     "id": "seg521",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789851600000,
+     "id": "seg522",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789851900000,
+     "id": "seg523",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-20",
+   "events": [
+    {
+     "at": 1789883100000,
+     "id": "seg601",
+     "type": "wake"
+    },
+    {
+     "at": 1789883400000,
+     "id": "seg602",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789883460000,
+     "id": "seg603",
+     "place": "Downstairs",
+     "type": "poop"
+    },
+    {
+     "at": 1789884000000,
+     "food": "Kibble",
+     "id": "seg604",
+     "type": "food"
+    },
+    {
+     "at": 1789885800000,
+     "id": "seg605",
+     "type": "sleep"
+    },
+    {
+     "at": 1789889400000,
+     "id": "seg606",
+     "type": "wake"
+    },
+    {
+     "at": 1789890300000,
+     "id": "seg607",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789893900000,
+     "food": "Meat",
+     "id": "seg608",
+     "type": "food"
+    },
+    {
+     "at": 1789894800000,
+     "id": "seg609",
+     "type": "sleep"
+    },
+    {
+     "at": 1789898400000,
+     "id": "seg610",
+     "type": "wake"
+    },
+    {
+     "at": 1789899000000,
+     "id": "seg611",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789903800000,
+     "id": "seg612",
+     "type": "sleep"
+    },
+    {
+     "at": 1789909200000,
+     "id": "seg613",
+     "type": "wake"
+    },
+    {
+     "at": 1789909200000,
+     "food": "Kibble",
+     "id": "seg614",
+     "type": "food"
+    },
+    {
+     "at": 1789910100000,
+     "id": "seg615",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789911900000,
+     "id": "seg616",
+     "type": "sleep"
+    },
+    {
+     "at": 1789919100000,
+     "id": "seg617",
+     "type": "wake"
+    },
+    {
+     "at": 1789920000000,
+     "id": "seg618",
+     "place": "Downstairs",
+     "type": "poop"
+    },
+    {
+     "at": 1789921500000,
+     "id": "seg619",
+     "note": "by the elevator",
+     "place": "Accident",
+     "type": "pee"
+    },
+    {
+     "at": 1789923600000,
+     "id": "seg620",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789923900000,
+     "id": "seg621",
+     "type": "sleep"
+    },
+    {
+     "at": 1789926600000,
+     "id": "seg622",
+     "type": "wake"
+    },
+    {
+     "at": 1789929300000,
+     "id": "seg623",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789929600000,
+     "id": "seg624",
+     "type": "sleep"
+    },
+    {
+     "at": 1789936800000,
+     "id": "seg625",
+     "type": "wake"
+    },
+    {
+     "at": 1789937100000,
+     "id": "seg626",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789937400000,
+     "id": "seg627",
+     "type": "sleep"
+    }
+   ]
+  },
+  {
+   "date": "2026-09-21",
+   "events": [
+    {
+     "at": 1789956600000,
+     "id": "seg701",
+     "type": "wake"
+    },
+    {
+     "at": 1789956900000,
+     "id": "seg702",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789956960000,
+     "id": "seg703",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1789957500000,
+     "id": "seg704",
+     "type": "sleep"
+    },
+    {
+     "at": 1789968900000,
+     "id": "seg705",
+     "type": "wake"
+    },
+    {
+     "at": 1789969020000,
+     "id": "seg706",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1789969200000,
+     "food": "Kibble",
+     "id": "seg707",
+     "type": "food"
+    },
+    {
+     "at": 1789972200000,
+     "id": "seg708",
+     "type": "sleep"
+    },
+    {
+     "at": 1789975800000,
+     "id": "seg709",
+     "type": "wake"
+    },
+    {
+     "at": 1789976400000,
+     "id": "seg710",
+     "note": "inside the fence",
+     "place": "Accident",
+     "type": "pee"
+    },
+    {
+     "at": 1789977600000,
+     "id": "seg711",
+     "type": "sleep"
+    },
+    {
+     "at": 1789981500000,
+     "id": "seg712",
+     "type": "wake"
+    },
+    {
+     "at": 1789982400000,
+     "id": "seg713",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1789983000000,
+     "food": "Meat",
+     "id": "seg714",
+     "type": "food"
+    },
+    {
+     "at": 1789987800000,
+     "id": "seg715",
+     "type": "sleep"
+    },
+    {
+     "at": 1789990200000,
+     "id": "seg716",
+     "type": "wake"
+    },
+    {
+     "at": 1789991100000,
+     "id": "seg717",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789995600000,
+     "food": "Kibble",
+     "id": "seg718",
+     "type": "food"
+    },
+    {
+     "at": 1789995600000,
+     "id": "seg719",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1789996200000,
+     "id": "seg720",
+     "type": "sleep"
+    },
+    {
+     "at": 1790001600000,
+     "id": "seg721",
+     "type": "wake"
+    },
+    {
+     "at": 1790004000000,
+     "id": "seg722",
+     "place": "Downstairs",
+     "type": "pee"
+    },
+    {
+     "at": 1790007600000,
+     "id": "seg723",
+     "place": "Terrace",
+     "type": "poop"
+    },
+    {
+     "at": 1790007660000,
+     "id": "seg724",
+     "place": "Inside",
+     "type": "pee"
+    },
+    {
+     "at": 1790010000000,
+     "id": "seg725",
+     "place": "Terrace",
+     "type": "pee"
+    },
+    {
+     "at": 1790011200000,
+     "id": "seg726",
+     "note": "still asleep at time of entry",
+     "type": "sleep"
+    }
+   ]
+  }
+ ]
+}

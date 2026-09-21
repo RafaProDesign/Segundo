@@ -1,0 +1,10 @@
+{
+  "name": "segundos-rhythm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Track Segundo's pees, poops, meals and naps, and see what is due next.",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.0"
+  }
+}

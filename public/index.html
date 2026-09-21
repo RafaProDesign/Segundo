@@ -1,0 +1,1879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Track Segundo's pees, poops, meals and naps, and see what is due next.">
+<meta name="theme-color" content="#EDEBE4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15171B" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Segundo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Segundo's Rhythm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EDEBE4;
+  --surface:#FBFAF7;
+  --surface-2:#F3F1EA;
+  --ink:#15171A;
+  --muted:#6B6F68;
+  --line:#D9D5C9;
+  --accent:#2A4C8F;
+  --accent-soft:#E2E7F2;
+  --on-accent:#FBFAF7;
+  --calm:#3F7D4E;
+  --watch:#D9A11B;
+  --high:#D2711E;
+  --gremlin:#B3382C;
+  --pee:#3A78B5;
+  --poop:#8A6234;
+  --food:#4C7A46;
+  --sleep:#5B5192;
+  --walk:#2F6F63;
+  --shadow:0 1px 2px rgba(20,22,18,.06), 0 8px 24px -16px rgba(20,22,18,.35);
+  --display:"Familjen Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ui:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171B;
+    --surface:#1D2025;
+    --surface-2:#24282E;
+    --ink:#ECEAE2;
+    --muted:#9AA09B;
+    --line:#32373E;
+    --accent:#8FB0E8;
+    --accent-soft:#242C3B;
+    --on-accent:#12151A;
+    --calm:#6FB981;
+    --watch:#E5BC52;
+    --high:#E39355;
+    --gremlin:#E2695B;
+    --pee:#77AEE0;
+    --poop:#C29A6A;
+    --food:#84B97C;
+    --sleep:#9C92D6;
+    --walk:#6FB9A9;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171B;
+  --surface:#1D2025;
+  --surface-2:#24282E;
+  --ink:#ECEAE2;
+  --muted:#9AA09B;
+  --line:#32373E;
+  --accent:#8FB0E8;
+  --accent-soft:#242C3B;
+  --on-accent:#12151A;
+  --calm:#6FB981;
+  --watch:#E5BC52;
+  --high:#E39355;
+  --gremlin:#E2695B;
+  --pee:#77AEE0;
+  --poop:#C29A6A;
+  --food:#84B97C;
+  --sleep:#9C92D6;
+  --walk:#6FB9A9;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -18px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--ui);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px;padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* ---- header ---- */
+.top{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:30;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  margin:0 -16px;padding:10px 16px 0;
+}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.state{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;
+  color:var(--muted);display:flex;align-items:center;gap:6px
+}
+.state .dot{width:7px;height:7px;border-radius:50%;background:var(--calm);display:inline-block}
+.state.asleep .dot{background:var(--sleep)}
+.tabs{display:flex;gap:2px;margin-top:8px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  background:none;border:0;padding:8px 10px 9px;font-size:13px;font-weight:500;
+  color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;
+}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+/* Five tabs have to fit the narrowest phones without a hidden scroll. */
+@media (max-width:360px){ .tab{padding:8px 6px 9px;font-size:12.5px} }
+
+/* ---- board ---- */
+.board{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow);overflow:hidden;margin-top:14px;
+}
+.board-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);
+}
+.eyebrow{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);
+}
+.row{
+  display:grid;grid-template-columns:4px 1fr auto;gap:0 12px;align-items:center;
+  padding:13px 14px 13px 0;border-bottom:1px solid var(--line);
+}
+.row:last-child{border-bottom:0}
+.stripe{width:4px;align-self:stretch;background:var(--line);border-radius:0 3px 3px 0}
+.row-main .label{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.01em}
+.row-main .why{font-size:12.5px;color:var(--muted);margin-top:1px}
+.count{
+  font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:22px;font-weight:500;
+  text-align:right;line-height:1.15;white-space:nowrap;
+}
+.count small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:2px}
+.count.over{color:var(--gremlin)}
+.count.soon{color:var(--high)}
+
+/* ---- gremlin gauge ---- */
+.gauge{padding:14px}
+.gauge-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:10px}
+.gauge-verdict{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.gauge-note{font-size:12.5px;color:var(--muted);max-width:34ch}
+.dial{position:relative;height:30px}
+.dial-track{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;height:16px}
+.dial-track span{border-radius:3px;opacity:.28}
+.dial-track span.on{opacity:1}
+.z1{background:var(--calm)}.z2{background:var(--watch)}.z3{background:var(--high)}.z4{background:var(--gremlin)}
+.needle{position:absolute;top:-4px;width:2px;height:24px;background:var(--ink);border-radius:2px;transition:left .6s cubic-bezier(.2,.7,.3,1)}
+.needle::after{content:"";position:absolute;left:-4px;top:-5px;border:5px solid transparent;border-top-color:var(--ink)}
+.dial-labels{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:6px}
+.dial-labels span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--muted);text-align:center}
+
+/* ---- generic ---- */
+.stack{display:flex;flex-direction:column;gap:14px;margin-top:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.card-pad{padding:14px}
+.card h3{font-size:14px;font-weight:600;letter-spacing:-.005em}
+.sub{font-size:12.5px;color:var(--muted)}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line)}
+@media(min-width:520px){.grid4{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);padding:12px 14px}
+.stat .v{font-family:var(--mono);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.stat .k{font-size:11.5px;color:var(--muted);margin-top:1px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);
+  background:var(--surface-2);border-radius:999px;padding:5px 11px;font-size:12.5px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.btn{
+  border:1px solid var(--line);background:var(--surface);border-radius:10px;
+  padding:9px 13px;font-size:13.5px;font-weight:500;
+}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:var(--gremlin);border-color:color-mix(in srgb,var(--gremlin) 40%, var(--line))}
+.btn.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);font-weight:600}
+.banner{
+  display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%, var(--line));
+  border-radius:12px;padding:10px 12px;margin-top:14px;font-size:13px;
+}
+.empty{padding:22px 14px;text-align:center;color:var(--muted);font-size:13.5px}
+
+/* ---- log list ---- */
+.daygroup{border-bottom:1px solid var(--line)}
+.daygroup:last-child{border-bottom:0}
+.dayhead{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 14px;background:var(--surface-2);
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+}
+.ev{
+  display:grid;grid-template-columns:52px 10px 1fr auto;gap:10px;align-items:center;
+  width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
+  padding:10px 14px;
+}
+.daygroup .ev:first-of-type{border-top:0}
+.ev:hover{background:var(--surface-2)}
+.ev .t{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ev .mk{width:10px;height:10px;border-radius:3px}
+.ev .name{font-size:14px;font-weight:500}
+.ev .det{font-size:12.5px;color:var(--muted)}
+.ev .who{font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+/* ---- charts ---- */
+.chartbox{overflow-x:auto}
+svg{display:block;max-width:100%}
+.axis{font-family:var(--mono);font-size:9px;fill:var(--muted)}
+.rowlab{font-family:var(--ui);font-size:11px;fill:var(--muted)}
+
+/* ---- the one prediction ---- */
+.nextcard{
+  margin-top:14px;background:var(--surface);border:1px solid var(--line);
+  border-left:5px solid var(--c);border-radius:18px;padding:18px 16px 16px;
+  box-shadow:var(--shadow);text-align:center;
+}
+.nextcard .eyebrow{display:block;color:var(--c);font-weight:600}
+.next-clock{
+  font-family:var(--display);font-size:clamp(46px,14vw,62px);font-weight:700;
+  letter-spacing:-.04em;line-height:1;margin-top:10px;font-variant-numeric:tabular-nums;
+}
+.next-in{
+  font-family:var(--mono);font-size:15px;color:var(--c);margin-top:8px;font-weight:500;
+}
+.next-why{
+  margin:14px auto 0;padding-top:12px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);line-height:1.55;max-width:38ch;
+}
+
+/* ---- action screen ---- */
+.statusline{
+  display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.01em;color:var(--muted);
+  padding:14px 2px 2px;
+}
+.statusline b{font-weight:500;color:var(--ink)}
+.statusline span + span::before{content:"·";margin-right:14px;color:var(--line)}
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.act{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:10px;
+  min-height:clamp(96px,14vh,132px);padding:14px;
+  border:1px solid var(--line);border-left:3px solid var(--c,var(--line));
+  border-radius:16px;background:var(--surface);box-shadow:var(--shadow);
+  text-align:left;transition:background .18s ease, border-color .18s ease;
+}
+.act:active{transform:scale(.985)}
+.act svg{width:23px;height:23px;color:var(--c,var(--ink))}
+.act-lab{font-family:var(--display);font-size:19px;font-weight:700;letter-spacing:-.015em;line-height:1}
+.act-sub{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.3}
+.act-foot{display:flex;flex-direction:column;gap:3px}
+.act.done{background:var(--accent-soft);border-color:var(--accent);border-left-color:var(--accent)}
+.act.done .act-sub{color:var(--accent);font-weight:600}
+.act.on{background:var(--accent-soft);border-color:var(--accent)}
+.act.wide{
+  grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;
+  gap:13px;min-height:0;padding:14px;
+}
+.act.wide .act-foot{flex:1}
+.strip{
+  margin-top:11px;background:var(--surface);border:1px solid var(--accent);
+  border-radius:14px;padding:11px 12px;box-shadow:var(--shadow);
+}
+.strip .eyebrow{display:block;margin-bottom:8px}
+.alert{
+  margin-top:12px;background:var(--surface);border:1px solid var(--line);
+  border-left:5px solid var(--c);border-radius:16px;padding:13px 14px;box-shadow:var(--shadow);
+}
+.alert-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.alert-title{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--c)}
+.alert-x{background:none;border:0;font-size:12.5px;color:var(--muted);text-decoration:underline;padding:2px 0}
+.alert-line{margin:7px 0 0;font-size:14.5px;font-weight:500;line-height:1.45}
+.alert-sub{margin:5px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.alert-signs{
+  margin:10px 0 0;font-size:12px;color:var(--muted);line-height:1.5;
+  background:var(--surface-2);border-radius:9px;padding:8px 10px;
+}
+.alert-signs strong{color:var(--ink);font-weight:600}
+.alert-ask{margin-top:12px;border-top:1px solid var(--line);padding-top:11px}
+.alert-ask .eyebrow{display:block;margin-bottom:8px}
+.hint{font-size:12.5px;color:var(--muted);margin:14px 2px 0;line-height:1.55}
+
+/* ---- first use ---- */
+.onboard{
+  margin-top:12px;background:var(--surface);border:1px solid var(--line);
+  border-left:5px solid var(--accent);border-radius:16px;padding:14px;box-shadow:var(--shadow);
+}
+.onboard .eyebrow{display:block;margin-bottom:6px}
+.onboard h3{font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.onboard p{margin:7px 0 0;font-size:13px;color:var(--muted);line-height:1.55}
+.onboard ol{margin:12px 0 0;padding:0;list-style:none;counter-reset:step}
+.onboard ol li{
+  counter-increment:step;position:relative;padding:0 0 0 30px;margin-top:11px;
+  font-size:13px;color:var(--muted);line-height:1.55;
+}
+.onboard ol li::before{
+  content:counter(step);position:absolute;left:0;top:1px;
+  width:21px;height:21px;border-radius:50%;background:var(--accent-soft);
+  color:var(--accent);font-family:var(--mono);font-size:11px;font-weight:600;
+  display:grid;place-items:center;
+}
+.onboard ol li b,.onboard p b{color:var(--ink);font-weight:600}
+.onboard-foot{
+  margin-top:13px;padding-top:11px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--muted);line-height:1.5;
+}
+.learning{
+  margin-top:12px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:14px;padding:11px 12px;
+}
+.learning .eyebrow{display:block;margin-bottom:8px}
+.learning .chips{gap:6px}
+.learn-chip{
+  display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);
+  background:var(--surface);border-radius:999px;padding:5px 11px;font-size:12px;color:var(--muted);
+}
+.learn-chip b{font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:600}
+body.no-dock .wrap{padding-bottom:28px}
+
+/* ---- dock ---- */
+.dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  background:color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);
+  padding:8px 12px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));
+}
+.dock-inner{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.log-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  border:1px solid var(--line);background:var(--surface);border-radius:12px;
+  padding:9px 2px 8px;font-size:11.5px;font-weight:500;line-height:1;
+}
+.log-btn:active{transform:scale(.97)}
+.log-btn svg{width:19px;height:19px}
+.log-btn.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* ---- sheet ---- */
+.scrim{position:fixed;inset:0;background:rgba(10,12,10,.45);z-index:50}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:51;
+  background:var(--surface);border-top:1px solid var(--line);
+  border-radius:18px 18px 0 0;box-shadow:0 -12px 40px -20px rgba(0,0,0,.6);
+  padding:14px 16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  max-width:760px;margin:0 auto;max-height:82vh;overflow-y:auto;
+}
+.sheet h3{font-size:18px;font-weight:700;letter-spacing:-.01em}
+.sheet-sec{margin-top:13px}
+.sheet-sec .eyebrow{display:block;margin-bottom:7px}
+.sheet-foot{display:flex;gap:8px;margin-top:18px}
+.sheet-foot .btn{flex:1;text-align:center;padding:11px}
+input[type="time"],input[type="text"],input[type="number"]{
+  font:inherit;font-family:var(--mono);background:var(--surface-2);color:var(--ink);
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+}
+label.field{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--muted)}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));
+  background:var(--ink);color:var(--bg);padding:9px 15px;border-radius:999px;
+  font-size:13px;z-index:60;box-shadow:var(--shadow);
+}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>
+  /* Outside the Claude viewer nothing pads the page for the notch, so do it here. */
+  html { color-scheme: light dark; }
+  :root {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  body { margin:0; }
+  img { max-width:100%; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1 id="dogName">Segundo</h1>
+      <span class="state" id="stateLine"><span class="dot"></span><span id="stateText">loading…</span></span>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-view="actions">Activity</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="now">Now</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="log">History</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="patterns">Patterns</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="setup">Setup</button>
+    </div>
+  </div>
+
+  <div id="demoBanner" hidden></div>
+
+  <section id="view-actions"></section>
+  <section id="view-now" hidden></section>
+  <section id="view-log" hidden></section>
+  <section id="view-patterns" hidden></section>
+  <section id="view-setup" hidden></section>
+</div>
+
+<div class="dock">
+  <div class="dock-inner" id="dock"></div>
+</div>
+
+<div id="scrim" class="scrim" hidden></div>
+<div id="sheet" class="sheet" hidden role="dialog" aria-modal="true" aria-label="Log an event"></div>
+
+<script src="store.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. CONSTANTS — the vocabulary of Segundo's day
+   ============================================================ */
+var MIN = 60000, HOUR = 3600000, DAY = 86400000;
+
+var ICONS = {
+  pee:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c3.6 4.2 5.5 7 5.5 9.4A5.5 5.5 0 0 1 12 18a5.5 5.5 0 0 1-5.5-5.6C6.5 10 8.4 7.2 12 3Z"/></svg>',
+  poop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.5A2.5 2.5 0 0 1 14.2 8c1.6.2 2.6 1.2 2.6 2.4 1.7.2 2.9 1.3 2.9 2.7 0 1.6-1.6 2.9-3.6 2.9H7.9C5.9 16 4.3 14.7 4.3 13c0-1.3 1-2.3 2.5-2.7C6.6 9 7.6 8 9.2 8c-.1-1 .2-1.9.8-2.5Z"/><path d="M4.5 19h15"/></svg>',
+  food: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11h17c0 4.4-3.8 7.5-8.5 7.5S3.5 15.4 3.5 11Z"/><path d="M7 11c0-2.2 2.2-4 5-4s5 1.8 5 4"/><path d="M12 4.5v1.2"/></svg>',
+  sleep:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.2 8.2 0 0 1 9.4 4 8.3 8.3 0 1 0 20 14.5Z"/></svg>',
+  wake: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>',
+  walk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="4.5" r="2"/><path d="M11 21l1.5-5.5L9.5 13l1-5 3.5 2 2.5 1"/><path d="m9.5 13-2.5 3.5M12.5 15.5 15 19"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"/><path d="M9.5 20v-6h5v6"/></svg>',
+  gremlin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-8 11h6l-2 9 8-11h-6l2-9Z"/></svg>'
+};
+
+var PLACES = ["Downstairs","Terrace","Inside","Accident"];
+var WALK_KINDS = ["Street","Forest","Puppy class","Park"];
+
+var TYPES = {
+  // Pee is always pee — what varies is where. Accident means none of the other three.
+  // A poop carries a second, optional dimension: how it came out.
+  pee:    { label:"Pee",     color:"var(--pee)",   dims:[
+              { k:"place", q:"Where?", opts:PLACES } ] },
+  poop:   { label:"Poop",    color:"var(--poop)",  dims:[
+              { k:"place",   q:"Where?",       opts:PLACES },
+              { k:"quality", q:"How was it?",  opts:["Normal","Soft","Diarrhea"] } ] },
+  food:   { label:"Food",    color:"var(--food)",  dims:[
+              { k:"food", q:"What did he eat?", opts:["Kibble","Meat","Treat","Chew / bone","Human food"] } ] },
+  sleep:  { label:"Asleep",  color:"var(--sleep)", dims:[] },
+  wake:   { label:"Awake",   color:"var(--sleep)", dims:[] },
+  // A walk is an interval, like sleep: one tap out, one tap back.
+  walk:   { label:"Walk",    color:"var(--walk)",  dims:[
+              { k:"kind", q:"What kind of walk?", opts:WALK_KINDS } ] },
+  home:   { label:"Back home", color:"var(--walk)", dims:[] },
+  // You tap this when he turns. Once there are a few, the app starts predicting it.
+  gremlin:{ label:"Gremlin", color:"var(--gremlin)", dims:[] },
+  calm:   { label:"Settled",  color:"var(--muted)",  dims:[] }
+};
+function dimsOf(type){ return (TYPES[type] && TYPES[type].dims) || []; }
+function detailText(e){
+  return dimsOf(e.type).map(function(d){ return e[d.k]; }).filter(Boolean).join(" · ");
+}
+
+// Sleep need and awake tolerance by age, with a small size adjustment.
+// Puppies sleep 18-20h a day; under 4 months they manage about an hour awake
+// at a time, 4-6 months about 90-120 minutes. Adults need far less sleep and
+// tolerate much longer days. Size moves these only slightly — the evidence for
+// breed effects on sleep DURATION is much weaker than the evidence for age.
+var SIZE_SLEEP = { small:-0.5, medium:0, large:0.5, giant:1.0 };
+var SIZE_WINDOW = { small:1.10, medium:1.00, large:0.95, giant:0.90 };
+function sleepProfile(){
+  var m = config.ageMonths||4, needH, winMin, band;
+  if(m<4)       { needH=19;   winMin=60;  band="under 4 months"; }
+  else if(m<6)  { needH=18;   winMin=105; band="4–6 months"; }
+  else if(m<12) { needH=16.5; winMin=150; band="6–12 months"; }
+  else if(m<84) { needH=12.5; winMin=240; band="adult"; }
+  else          { needH=14;   winMin=200; band="senior"; }
+  var size = config.breedSize||"small";
+  return {
+    band: band, size: size,
+    needMs: (needH + (SIZE_SLEEP[size]||0)) * HOUR,
+    baseWindowMs: winMin * MIN * (SIZE_WINDOW[size]||1)
+  };
+}
+
+// A proper meal moves the bowels; a treat or a chew does not, so only these
+// count when the app works out how long after eating he usually poops.
+var MEAL_FOODS = ["Kibble","Meat","Wet food"];
+function isMeal(e){ return !e.food || MEAL_FOODS.indexOf(e.food) > -1; }
+
+var ZONES = [
+  { name:"CALM",    cls:"z1", color:"var(--calm)",    note:"Happy and settled. Carry on." },
+  { name:"WATCH",   cls:"z2", color:"var(--watch)",   note:"Getting tired. Wind the play down." },
+  { name:"HIGH",    cls:"z3", color:"var(--high)",    note:"Overtired soon. Start the nap routine." },
+  { name:"GREMLIN", cls:"z4", color:"var(--gremlin)", note:"Past his limit. Crate or quiet room now." }
+];
+
+// What an overtired puppy actually looks like — shown with the alert so you can
+// check it against the dog in front of you before answering.
+var GREMLIN_SIGNS = "frantic circling, hard relentless biting, ignoring cues he knows, "
+  + "barking at nothing, wide eyes, refusing even good treats. Three at once means rest, not training.";
+
+/* ============================================================
+   2. STATE
+   ============================================================ */
+var canWrite = true, myId = null;   // myId is whoever is logging on this device
+var days = new Map();                       // "YYYY-MM-DD" -> {date, events:[]}
+var config = { name:"Segundo", ageMonths:4, breedSize:"small" };
+var view = "actions";   // the app always opens here
+var sleepBlocks = [];
+var ticker = null;
+
+/* ============================================================
+   3. SMALL HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function pad2(n){ return (n<10?"0":"")+n; }
+function dateKey(ts){ var d=new Date(ts); return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate()); }
+function startOfDay(ts){ var d=new Date(ts); d.setHours(0,0,0,0); return d.getTime(); }
+function fmtTime(ts){ var d=new Date(ts); return pad2(d.getHours())+":"+pad2(d.getMinutes()); }
+function fmtDayLabel(key){
+  var t = new Date(key+"T12:00:00").getTime();
+  var today = startOfDay(Date.now());
+  var d0 = startOfDay(t);
+  if(d0===today) return "Today";
+  if(d0===today-DAY) return "Yesterday";
+  return new Date(t).toLocaleDateString(undefined,{weekday:"short", day:"numeric", month:"short"});
+}
+function fmtDur(ms){
+  if(ms==null || !isFinite(ms)) return "—";
+  var neg = ms<0; ms=Math.abs(ms);
+  var m = Math.round(ms/MIN), h = Math.floor(m/60); m = m%60;
+  var s = h>0 ? h+"h "+pad2(m)+"m" : m+"m";
+  return (neg?"−":"")+s;
+}
+function median(a){
+  if(!a.length) return null;
+  var b=a.slice().sort(function(x,y){return x-y;});
+  var i=Math.floor(b.length/2);
+  return b.length%2 ? b[i] : (b[i-1]+b[i])/2;
+}
+function quantile(a,q){
+  if(!a.length) return null;
+  var b=a.slice().sort(function(x,y){return x-y;});
+  var i=(b.length-1)*q, lo=Math.floor(i), hi=Math.ceil(i);
+  return b[lo]+(b[hi]-b[lo])*(i-lo);
+}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function toast(msg){
+  var el=document.createElement("div"); el.className="toast"; el.textContent=msg;
+  document.body.appendChild(el); setTimeout(function(){ el.remove(); },2200);
+}
+
+/* ============================================================
+   4. STORAGE — shared db when available, local fallback otherwise
+   ============================================================ */
+var LOCAL_KEY = "segundo-local-v1";
+function loadLocal(){
+  try{
+    var raw = localStorage.getItem(LOCAL_KEY);
+    if(!raw) return;
+    var obj = JSON.parse(raw);
+    (obj.days||[]).forEach(function(d){ days.set(d.date,d); });
+    if(obj.config) config = Object.assign(config, obj.config);
+  }catch(e){}
+}
+function saveLocal(){
+  try{
+    localStorage.setItem(LOCAL_KEY, JSON.stringify({
+      days:Array.from(days.values()), config:config
+    }));
+  }catch(e){}
+}
+
+var chain = Promise.resolve();
+function enqueue(fn){ chain = chain.then(fn, fn); return chain; }
+
+// Every write re-reads the day document first, so two people logging at the
+// same moment merge instead of overwriting each other.
+function mutateDay(key, mutate){
+  var local = days.get(key) || { date:key, events:[] };
+  var before = local.events.slice();
+  var after  = mutate(before.slice());
+  days.set(key, { date:key, events:after });
+  render();
+  saveLocal();
+  var kept = {};
+  after.forEach(function(e){ kept[e.id] = 1; });
+  var removed = before.filter(function(e){ return !kept[e.id]; }).map(function(e){ return e.id; });
+  return Store.saveDay(key, after, removed);
+}
+function saveConfig(){
+  saveLocal();
+  Store.saveConfig(config);
+}
+
+/* ============================================================
+   5. EVENT ACCESS
+   ============================================================ */
+function allEvents(){
+  var out=[];
+  days.forEach(function(d){ (d.events||[]).forEach(function(e){ out.push(e); }); });
+  out.sort(function(a,b){ return a.at-b.at; });
+  return out;
+}
+function eventsOfType(t){ return allEvents().filter(function(e){ return e.type===t; }); }
+function lastOf(t){ var e=eventsOfType(t); return e.length? e[e.length-1] : null; }
+function localEventCount(){
+  var n=0; days.forEach(function(d){ n += (d.events||[]).length; }); return n;
+}
+function hasDemo(){ return allEvents().some(function(e){ return e.demo; }); }
+
+function addEvent(type, at, vals){
+  var ev = { id:uid(), type:type, at:at };
+  dimsOf(type).forEach(function(d){ if(vals && vals[d.k]) ev[d.k] = vals[d.k]; });
+  if(myId) ev.by = myId;
+  mutateDay(dateKey(at), function(evs){
+    evs.push(ev);
+    evs.sort(function(a,b){ return a.at-b.at; });
+    return evs;
+  });
+}
+function deleteEvent(ev){
+  mutateDay(dateKey(ev.at), function(evs){
+    return evs.filter(function(e){ return e.id!==ev.id; });
+  });
+}
+function updateEvent(ev, newAt, vals){
+  var oldKey = dateKey(ev.at), newKey = dateKey(newAt);
+  var next = Object.assign({}, ev, { at:newAt });
+  dimsOf(ev.type).forEach(function(d){
+    if(vals && vals[d.k]) next[d.k] = vals[d.k]; else delete next[d.k];
+  });
+  if(oldKey===newKey){
+    mutateDay(oldKey, function(evs){
+      var out = evs.filter(function(e){ return e.id!==ev.id; });
+      out.push(next); out.sort(function(a,b){ return a.at-b.at; });
+      return out;
+    });
+  } else {
+    mutateDay(oldKey, function(evs){ return evs.filter(function(e){ return e.id!==ev.id; }); });
+    mutateDay(newKey, function(evs){ evs.push(next); evs.sort(function(a,b){return a.at-b.at;}); return evs; });
+  }
+}
+
+/* ============================================================
+   6. SLEEP TIMELINE + AWAKE-TIME MATH
+   A puppy's bladder fills while he is awake, not while he naps,
+   so every interval below is measured in awake minutes.
+   ============================================================ */
+var staleSleep = false, staleWake = null;
+function buildSleep(){
+  var evs = allEvents().filter(function(e){ return e.type==="sleep"||e.type==="wake"; });
+  var out=[], start=null;
+  staleSleep = false; staleWake = null;
+  evs.forEach(function(e){
+    if(e.type==="sleep"){ if(start===null) start=e.at; }
+    else { if(start!==null){ out.push([start,e.at]); start=null; } }
+  });
+  if(start!==null){
+    // Somebody forgot to tap "Woke up". Don't let the whole app sit frozen:
+    // assume a normal night and ask for the missing entry.
+    if(Date.now()-start > 12*HOUR){
+      staleSleep = true; staleWake = start + 9*HOUR;
+      out.push([start, staleWake]);
+    } else {
+      out.push([start, Date.now()+DAY]); // still asleep right now
+    }
+  }
+  sleepBlocks = out;
+}
+function sleepMsBetween(a,b){
+  var s=0;
+  for(var i=0;i<sleepBlocks.length;i++){
+    var lo=Math.max(a,sleepBlocks[i][0]), hi=Math.min(b,sleepBlocks[i][1]);
+    if(hi>lo) s += hi-lo;
+  }
+  return s;
+}
+function awakeMsBetween(a,b){ if(b<=a) return 0; return Math.max(0,(b-a)-sleepMsBetween(a,b)); }
+function isAsleep(){
+  if(staleSleep) return false;
+  var last=null;
+  allEvents().forEach(function(e){ if(e.type==="sleep"||e.type==="wake") last=e; });
+  return !!(last && last.type==="sleep");
+}
+/* Walks are intervals too — paired walk/home events, same shape as sleep. */
+function walkBlocks(){
+  var evs = allEvents().filter(function(e){ return e.type==="walk"||e.type==="home"; });
+  var out=[], start=null;
+  evs.forEach(function(e){
+    if(e.type==="walk"){ if(start===null) start=e.at; }
+    else { if(start!==null){ out.push([start,e.at]); start=null; } }
+  });
+  if(start!==null && Date.now()-start < 6*HOUR) out.push([start, Date.now()]);
+  return out;
+}
+function isWalking(){
+  var last=null;
+  allEvents().forEach(function(e){ if(e.type==="walk"||e.type==="home") last=e; });
+  if(!last || last.type!=="walk") return false;
+  return (Date.now()-last.at) < 6*HOUR;   // a forgotten "back home" shouldn't stick forever
+}
+function lastWakeTime(){
+  var evs = allEvents().filter(function(e){ return e.type==="wake"; });
+  var t = evs.length ? evs[evs.length-1].at : null;
+  if(staleSleep && staleWake && (t===null || staleWake>t)) return staleWake;
+  return t;
+}
+// When does awake-time since `from` reach `target` ms?
+function dueAt(from, target){
+  var now = Date.now();
+  var used = awakeMsBetween(from, now);
+  var left = target - used;
+  if(isAsleep()) return { left:left, at:null, paused:true };
+  return { left:left, at:now+left, paused:false };
+}
+
+/* ============================================================
+   7. THE PREDICTIONS
+   ============================================================ */
+function awakeGaps(type, maxMs){
+  var evs = eventsOfType(type), gaps=[];
+  for(var i=1;i<evs.length;i++){
+    var g = awakeMsBetween(evs[i-1].at, evs[i].at);
+    if(g > 3*MIN && g < maxMs) gaps.push(g);
+  }
+  return gaps;
+}
+function ruleOfThumbPee(){
+  // The standard puppy guideline: roughly (age in months + 1) hours, capped.
+  var m = Math.max(1, Math.min(10, config.ageMonths||4));
+  return Math.min(8, m+1) * HOUR;
+}
+function ruleOfThumbAwake(){ return sleepProfile().baseWindowMs; }  // one source of truth
+function prof0(){ return sleepProfile(); }
+
+function predictPee(){
+  var gaps = awakeGaps("pee", 6*HOUR);
+  var last = lastOf("pee");
+  var learned = gaps.length>=4 ? median(gaps) : null;
+  var target = learned || ruleOfThumbPee();
+  var band = gaps.length>=6 ? [quantile(gaps,.25), quantile(gaps,.75)] : null;
+  var d = last ? dueAt(last.at, target) : null;
+  return {
+    key:"pee", label:"Pee", color:"var(--pee)", last:last, target:target,
+    learned:!!learned, n:gaps.length, band:band, due:d,
+    why: learned
+      ? "Typically every "+fmtDur(target)+" awake · "+gaps.length+" gaps"
+      : "Rule of thumb for "+(config.ageMonths||4)+" months — still learning his own pattern"
+  };
+}
+function predictPoop(){
+  var gaps = awakeGaps("poop", 12*HOUR);
+  var poops = eventsOfType("poop"), meals = eventsOfType("food").filter(isMeal);
+  // How long after a meal does a poop usually follow?
+  var lags=[];
+  meals.forEach(function(m){
+    for(var i=0;i<poops.length;i++){
+      if(poops[i].at>m.at){
+        var lag=poops[i].at-m.at;
+        if(lag < 2.5*HOUR) lags.push(lag);
+        break;
+      }
+    }
+  });
+  var mealLag = lags.length>=3 ? median(lags) : null;
+  var gapTarget = gaps.length>=3 ? median(gaps) : 5*HOUR;
+  var lastPoop = poops.length? poops[poops.length-1] : null;
+  var lastMeal = meals.length? meals[meals.length-1] : null;
+
+  var byGap = lastPoop ? dueAt(lastPoop.at, gapTarget) : null;
+  var byMeal = (mealLag && lastMeal && (!lastPoop || lastMeal.at>lastPoop.at))
+    ? { left:(lastMeal.at+mealLag)-Date.now(), at:lastMeal.at+mealLag, paused:false } : null;
+
+  var use = byGap, why;
+  if(byMeal && (!byGap || byMeal.left < byGap.left)){
+    use = byMeal;
+    why = "Usually "+fmtDur(mealLag)+" after a meal · "+lags.length+" meals tracked";
+  } else {
+    why = gaps.length>=3
+      ? "Typically every "+fmtDur(gapTarget)+" awake · "+gaps.length+" gaps"
+      : "Needs a few more poops before the pattern shows";
+  }
+  return { key:"poop", label:"Poop", color:"var(--poop)", last:lastPoop,
+           target:gapTarget, learned:gaps.length>=3, n:gaps.length, band:null, due:use, why:why };
+}
+function predictFood(){
+  // Meals run on your clock, not his bladder, so this one uses real elapsed time.
+  var meals = eventsOfType("food").filter(isMeal), gaps=[];
+  for(var i=1;i<meals.length;i++){
+    var g = meals[i].at-meals[i-1].at;
+    if(g>45*MIN && g<16*HOUR) gaps.push(g);
+  }
+  var learned = gaps.length>=3 ? median(gaps) : null;
+  var target = learned || 6*HOUR;
+  var last = meals.length ? meals[meals.length-1] : null;
+  return {
+    key:"food", label:"Food", color:"var(--food)", last:last, target:target,
+    learned:!!learned, n:gaps.length, band:null,
+    due: last ? { left:(last.at+target)-Date.now(), at:last.at+target, paused:false } : null,
+    why: learned ? "He eats about every "+fmtDur(target)+" · "+gaps.length+" meals"
+                 : "Assuming 6h between meals until yours show a pattern"
+  };
+}
+// Gremlin only becomes a prediction once you have told the app what it looks
+// like. Until then it is purely something you log.
+function predictGremlin(){
+  var learned = learnedWindow();
+  if(!learned) return null;
+  var prof = sleepProfile();
+  var slept = sleepLast24h(), covered = hasFullDayOfLogging();
+  var debt = covered ? Math.max(0, prof.needMs - slept) : 0;
+  var effective = learned.ms * (1 - 0.25*Math.min(1, debt/(3*HOUR)));
+  var lw = lastWakeTime();
+  if(!lw) return null;
+  return {
+    key:"gremlin", label:"Gremlin", color:"var(--gremlin)", last:{at:lw}, target:effective,
+    learned:true, n:learned.yes, band:null,
+    due:{ left:(lw+effective)-Date.now(), at:lw+effective, paused:isAsleep() },
+    why: "He turns after about "+fmtDur(effective)+" awake · "+learned.yes+" you confirmed"
+       + (debt>20*MIN ? ", shortened because he is "+fmtDur(debt)+" down on sleep" : "")
+  };
+}
+// The one thing the Activity screen shows: whichever is due soonest.
+function nextEvent(){
+  var cands = [predictPee(), predictPoop(), predictFood(), predictNap()];
+  var g = predictGremlin(); if(g) cands.push(g);
+  var live = cands.filter(function(p){ return p.due && p.last; });
+  if(!live.length) return null;
+  live.sort(function(a,b){ return a.due.left - b.due.left; });
+  return live[0];
+}
+function predictNap(){
+  // How long does he stay awake between naps?
+  var stretches=[];
+  var evs = allEvents().filter(function(e){ return e.type==="sleep"||e.type==="wake"; });
+  for(var i=0;i<evs.length-1;i++){
+    if(evs[i].type==="wake" && evs[i+1].type==="sleep"){
+      var s = evs[i+1].at-evs[i].at;
+      if(s>10*MIN && s<8*HOUR) stretches.push(s);
+    }
+  }
+  var learned = stretches.length>=3 ? median(stretches) : null;
+  var target = learned || ruleOfThumbAwake();
+  var lw = lastWakeTime();
+  var d = lw ? { left:(lw+target)-Date.now(), at:lw+target, paused:isAsleep() } : null;
+  return {
+    key:"nap", label:"Nap", color:"var(--sleep)", last: lw?{at:lw}:null,
+    target:target, learned:!!learned, n:stretches.length, band:null, due:d,
+    why: learned
+      ? "Stays awake about "+fmtDur(target)+" between naps · "+stretches.length+" stretches"
+      : "Typical for a "+prof0().size+" dog of "+prof0().band+" — log a few naps to replace it"
+  };
+}
+
+/* ---- how much sleep has he actually had? ---- */
+/* If nothing has been logged for hours, every live number is fiction — the app
+   would happily report "awake 35h" rather than "you stopped logging on Saturday". */
+function lastEventAt(){ var e=allEvents(); return e.length ? e[e.length-1].at : null; }
+function isStale(){
+  var t = lastEventAt();
+  return t!=null && (Date.now()-t) > 6*HOUR;
+}
+function sleepLast24h(){ return sleepMsBetween(Date.now()-DAY, Date.now()); }
+function hasFullDayOfLogging(){
+  var evs = allEvents();
+  return evs.length>0 && evs[0].at <= Date.now()-20*HOUR;
+}
+// Awake time he had accumulated at the moment of a given event.
+function awakeAtEvent(e){
+  var wakes = allEvents().filter(function(w){ return w.type==="wake" && w.at<e.at; });
+  if(!wakes.length) return null;
+  var s = e.at - wakes[wakes.length-1].at;
+  return (s>10*MIN && s<8*HOUR) ? s : null;
+}
+// Your answers to the alert teach it Segundo's real limit: the gremlin
+// confirmations set the ceiling, the "he's fine" answers push up the floor.
+function learnedWindow(){
+  var yes=[];
+  eventsOfType("gremlin").forEach(function(e){ var a=awakeAtEvent(e); if(a) yes.push(a); });
+  if(yes.length<3) return null;
+  // The 25th percentile, so the warning lands before a typical episode, not during it.
+  return { ms: quantile(yes, 0.25), yes:yes.length };
+}
+
+function gremlinModel(){
+  var prof = sleepProfile();
+  var learned = learnedWindow();
+  var base = learned ? learned.ms : prof.baseWindowMs;
+
+  var slept = sleepLast24h();
+  var covered = hasFullDayOfLogging();
+  var debt = covered ? Math.max(0, prof.needMs - slept) : 0;
+
+  // Sleep debt shortens the fuse: three hours short takes a quarter off the window.
+  var shrink = 1 - 0.25*Math.min(1, debt/(3*HOUR));
+  var effective = base * shrink;
+
+  var lw = lastWakeTime();
+  var asleep = isAsleep();
+  var awakeFor = (lw && !asleep) ? Date.now()-lw : (asleep ? 0 : null);
+  var ratio = (awakeFor==null || !effective) ? 0 : awakeFor/effective;
+
+  var level = null;
+  if(!asleep && awakeFor!=null){
+    if(ratio>=1.25) level = "overtired";
+    else if(ratio>=0.95) level = "due";
+  }
+  var zone = asleep ? 0 : ratio<0.55 ? 0 : ratio<0.8 ? 1 : ratio<1 ? 2 : 3;
+
+  return {
+    profile:prof, learned:learned, base:base, effective:effective,
+    slept:slept, needed:prof.needMs, debt:debt, covered:covered,
+    awakeFor:awakeFor, asleep:asleep, level:level,
+    ratio:Math.max(0,Math.min(1.35,ratio)), zone:zone
+  };
+}
+
+/* ============================================================
+   7b. VIEW: ACTIONS — the front door. One tap logs, nothing blocks.
+   ============================================================ */
+var actionFeedback = null, detailPrompt = null, fbTimer = null, dpTimer = null;
+
+function quickLog(type){
+  var at = Date.now();
+  var ev = { id:uid(), type:type, at:at };
+  if(myId) ev.by = myId;
+  var key = dateKey(at);
+
+  actionFeedback = { type:type, at:at };
+  clearTimeout(fbTimer);
+  fbTimer = setTimeout(function(){ actionFeedback=null; if(view==="actions") renderActions(); }, 5000);
+
+
+  clearTimeout(dpTimer);
+  if(dimsOf(type).length){
+    detailPrompt = { id:ev.id, dayKey:key, type:type };
+    armDetailTimer();
+  } else {
+    detailPrompt = null;
+  }
+
+  mutateDay(key, function(evs){
+    evs.push(ev);
+    evs.sort(function(a,b){ return a.at-b.at; });
+    return evs;
+  });
+}
+// The strip stays open after a tap so a poop can take both where and how.
+function armDetailTimer(){
+  clearTimeout(dpTimer);
+  dpTimer = setTimeout(function(){
+    detailPrompt = null;
+    if(view==="actions") renderActions();
+  }, 11000);
+}
+function promptEvent(){
+  if(!detailPrompt) return null;
+  var d = days.get(detailPrompt.dayKey);
+  if(!d) return null;
+  return (d.events||[]).filter(function(e){ return e.id===detailPrompt.id; })[0] || null;
+}
+function setDetail(key, value){
+  if(!detailPrompt) return;
+  var p = detailPrompt;
+  armDetailTimer();
+  mutateDay(p.dayKey, function(evs){
+    return evs.map(function(e){
+      if(e.id!==p.id) return e;
+      var n = Object.assign({}, e);
+      if(n[key]===value) delete n[key];   // tapping the chosen chip again clears it
+      else n[key] = value;
+      return n;
+    });
+  });
+}
+function undoLast(){
+  if(!actionFeedback) return;
+  var key = dateKey(actionFeedback.at), at = actionFeedback.at, type = actionFeedback.type;
+  actionFeedback = null; detailPrompt = null;
+  clearTimeout(fbTimer); clearTimeout(dpTimer);
+  mutateDay(key, function(evs){
+    for(var i=evs.length-1;i>=0;i--){
+      if(evs[i].type===type && evs[i].at===at){ evs.splice(i,1); break; }
+    }
+    return evs;
+  });
+  toast("Removed");
+}
+
+/* ---- first use: say why the screen is empty, and what to tap first ---- */
+function firstUseHTML(){
+  var evs = allEvents();
+  var prof = sleepProfile();
+  var dog = esc(config.name || "Segundo");
+  var hasSleep = evs.some(function(e){ return e.type==="sleep" || e.type==="wake"; });
+
+  // Nothing at all.
+  if(evs.length===0){
+    return '<div class="onboard">'
+      + '<span class="eyebrow">First time here</span>'
+      + '<h3>No events yet</h3>'
+      + '<p>Nothing has been logged for '+dog+', so there is nothing to predict from. '
+      + 'Each button below stamps the time the moment you tap it.</p>'
+      + '<ol>'
+        + '<li><b>Tap it when it happens.</b> Pee, Poop and Food are one tap each; a strip then offers '
+        + 'where or what, and ignoring it is fine.</li>'
+        + '<li><b>Mark the naps.</b> <b>Asleep</b> when he settles, <b>Woke up</b> when he rises. '
+        + 'This one matters most — everything here is measured in awake time.</li>'
+        + '<li><b>Late is fine.</b> Log it anyway, then fix the time under <b>History</b>.</li>'
+      + '</ol>'
+      + '<p class="onboard-foot">Until then the forecasts use textbook figures for a '+esc(prof.size)
+      + ' dog of '+esc(prof.band)+'. Two days of tapping and they switch to his own — set his age and size under <b>Setup</b>.</p>'
+    + '</div>';
+  }
+
+  // Logged before, but not lately — say so instead of extrapolating from stale times.
+  if(isStale()){
+    var gap = Date.now() - lastEventAt();
+    var when = fmtDayLabel(dateKey(lastEventAt())) + " at " + fmtTime(lastEventAt());
+    return '<div class="onboard">'
+      + '<span class="eyebrow">Catching up</span>'
+      + '<h3>Paused — nothing logged for '+esc(fmtDur(gap))+'</h3>'
+      + '<p>The last entry was <b>'+esc(when)+'</b>. The countdowns and the gremlin forecast both work '
+      + 'from the time since his last event, so with a gap this size they would be guessing rather than '
+      + 'predicting. They stay off until you log something.</p>'
+      + '<p class="onboard-foot">Tap whatever happens next and they start again straight away. '
+      + 'If you want to fill in what you missed, add it from <b>History</b> — the estimates use all of it.</p>'
+    + '</div>';
+  }
+
+  // Things logged, but the sleep clock has never been started.
+  if(!hasSleep){
+    return '<div class="onboard">'
+      + '<span class="eyebrow">One thing missing</span>'
+      + '<h3>The sleep clock hasn’t started</h3>'
+      + '<p>'+evs.length+' event'+(evs.length>1?'s':'')+' logged, but no sleep yet — so the app still can’t '
+      + 'tell awake time from clock time. Tap <b>Asleep</b> next time he settles down, and <b>Woke up</b> when he gets up.</p>'
+      + '<p class="onboard-foot">Until that happens the nap countdown and the gremlin forecast stay dark, '
+      + 'and the pee and poop estimates treat a nap as if he had been awake through it.</p>'
+    + '</div>';
+  }
+
+  // Logging under way: the Activity screen stays on the one prediction and
+  // nothing else. Progress towards each estimate lives in Patterns.
+  return "";
+}
+
+function nextCardHTML(){
+  var n = nextEvent();
+  if(!n) return "";
+  var asleep = isAsleep();
+  var left = n.due.left;
+  var colour = n.color, clock, sub, note = n.why;
+
+  if(asleep){
+    colour = "var(--sleep)";
+    var since = sleepBlocks.length ? sleepBlocks[sleepBlocks.length-1][0] : Date.now();
+    clock = "Asleep";
+    sub = "down since " + fmtTime(since);
+    note = "The clock is paused. Expect a pee within minutes of him waking \u2014 "
+         + "that is when most of this week\u2019s accidents happened.";
+    return card(colour, "While he sleeps", clock, sub, note, false);
+  }
+  if(left < 0){
+    colour = "var(--gremlin)";
+    clock = "Now";
+    sub = "overdue by " + fmtDur(Math.abs(left));
+  } else {
+    clock = fmtTime(n.due.at);
+    sub = "in " + fmtDur(left);
+    if(left < 20*MIN) colour = "var(--high)";
+  }
+  return card(colour, "Next event \u2014 " + n.label, clock, sub, note, true);
+
+  function card(c, eyebrow, big, small, why, showLabel){
+    return '<div class="nextcard" style="--c:'+c+'">'
+      + '<span class="eyebrow">'+esc(eyebrow)+'</span>'
+      + '<div class="next-clock">'+esc(big)+'</div>'
+      + '<div class="next-in">'+esc(small)+'</div>'
+      + '<p class="next-why">'+esc(why)+'</p>'
+      + '</div>';
+  }
+}
+
+function renderActions(){
+  var el = $("view-actions");
+  var asleep = isAsleep();
+
+  var defs = [
+    { type:"pee",  label:"Pee",  icon:ICONS.pee },
+    { type:"poop", label:"Poop", icon:ICONS.poop },
+    { type:"food", label:"Food", icon:ICONS.food },
+    { type: asleep?"wake":"sleep", label: asleep?"Woke up":"Asleep",
+      icon: asleep?ICONS.wake:ICONS.sleep, on:asleep },
+    { type:"gremlin", label:"Gremlin", icon:ICONS.gremlin, wide:true }
+  ];
+
+  var onboard = firstUseHTML();
+  var bigOnboard = onboard.indexOf('class="onboard"') > -1;
+
+  var html = onboard
+    + (bigOnboard ? "" : nextCardHTML())
+    + '<div class="actions-grid">';
+
+  defs.forEach(function(d){
+    var fresh = actionFeedback && actionFeedback.type===d.type;
+    html += '<button class="act'+(d.wide?" wide":"")+(fresh?" done":"")+(d.on&&!fresh?" on":"")+'"'
+      + ' style="--c:'+TYPES[d.type].color+(canWrite?'':';opacity:.45')+'" data-act="'+d.type+'"'
+      + (canWrite?'':' disabled')+'>'
+      + d.icon
+      + '<span class="act-foot"><span class="act-lab">'+esc(d.label)+'</span>'
+      + (fresh ? '<span class="act-sub">logged '+fmtTime(actionFeedback.at)+'</span>' : '')
+      + '</span></button>';
+  });
+  html += '</div>';
+
+  if(detailPrompt){
+    var cur = promptEvent() || {};
+    html += '<div class="strip">';
+    dimsOf(detailPrompt.type).forEach(function(d,i){
+      html += '<span class="eyebrow"'+(i?' style="margin-top:11px"':'')+'>'+esc(d.q)+' \u2014 optional</span>'
+        + '<div class="chips">'
+        + d.opts.map(function(o){
+            return '<button class="btn'+(cur[d.k]===o?' sel':'')+'" data-dim="'+esc(d.k)+'" data-det="'+esc(o)+'">'
+              + esc(o)+'</button>';
+          }).join("")
+        + '</div>';
+    });
+    html += '</div>';
+  } else if(actionFeedback){
+    html += '<div class="strip" style="display:flex;justify-content:space-between;align-items:center;gap:10px">'
+      + '<span class="sub">'+esc(TYPES[actionFeedback.type].label)+' logged at '+fmtTime(actionFeedback.at)+'.</span>'
+      + '<button class="btn danger" id="undoBtn">Undo</button></div>';
+  }
+
+  el.innerHTML = html;
+
+  Array.prototype.forEach.call(el.querySelectorAll("[data-act]"), function(b){
+    b.onclick = function(){ quickLog(b.getAttribute("data-act")); };
+  });
+  Array.prototype.forEach.call(el.querySelectorAll("[data-det]"), function(b){
+    b.onclick = function(){ setDetail(b.getAttribute("data-dim"), b.getAttribute("data-det")); };
+  });
+  if($("undoBtn")) $("undoBtn").onclick = undoLast;
+}
+
+/* ============================================================
+   8. VIEW: NOW
+   ============================================================ */
+function rowHTML(p){
+  var left = p.due ? p.due.left : null;
+  var cls = "count", big, small;
+  if(!p.last){
+    big = "—"; small = "no data yet";
+  } else if(isStale()){
+    big = "—"; small = "paused";
+  } else if(p.due && p.due.paused){
+    big = fmtDur(Math.max(0,left)); small = "of awake time left";
+  } else if(left!=null && left<0){
+    cls += " over"; big = fmtDur(left); small = "overdue";
+  } else {
+    if(left!=null && left < 20*MIN) cls += " soon";
+    big = fmtDur(left); small = "due " + (p.due && p.due.at ? fmtTime(p.due.at) : "—");
+  }
+  var lastTxt = p.last ? ("last " + fmtTime(p.last.at)) : "";
+  return '<div class="row">'
+    + '<div class="stripe" style="background:'+p.color+'"></div>'
+    + '<div class="row-main"><div class="label">'+esc(p.label)
+    + (lastTxt? ' <span class="sub" style="font-family:var(--mono);font-size:11px">· '+esc(lastTxt)+'</span>':'')
+    + '</div><div class="why">'+esc(p.why)+'</div></div>'
+    + '<div class="'+cls+'">'+esc(big)+'<small>'+esc(small)+'</small></div>'
+    + '</div>';
+}
+
+function renderNow(){
+  var el = $("view-now");
+  var evs = allEvents();
+  var pee = predictPee(), poop = predictPoop(), nap = predictNap(), g = gremlinModel();
+  var z = ZONES[g.zone];
+  var needleLeft = Math.min(99, (g.ratio/1.35)*100);
+
+  var verdict = z.name.charAt(0)+z.name.slice(1).toLowerCase();
+  var note;
+  if(g.asleep) note = "Asleep — the clock is paused while he rests.";
+  else if(!lastWakeTime()) note = "Log a wake-up so the gremlin clock can start.";
+  else note = z.note + " Awake "+fmtDur(g.awakeFor)+" of about "+fmtDur(g.effective)+".";
+
+  var todayKey = dateKey(Date.now());
+  var today = (days.get(todayKey)||{events:[]}).events;
+  var count = function(t){ return today.filter(function(e){ return e.type===t; }).length; };
+  var sleepToday = sleepMsBetween(startOfDay(Date.now()), Date.now());
+
+  el.innerHTML =
+    '<div class="board">'
+      + '<div class="board-head"><span class="eyebrow">Next up</span>'
+        + '<span class="eyebrow">'+ (isAsleep()? "paused · asleep" : "live") +'</span></div>'
+      + rowHTML(pee) + rowHTML(poop) + rowHTML(nap)
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">Gremlin forecast</span>'
+        + '<span class="eyebrow">'+ (g.learned ? "his own limit · "+g.learned.yes+" confirmed"
+             : esc(g.profile.band)+" · "+esc(g.profile.size)) +'</span></div>'
+      + '<div class="gauge">'
+        + '<div class="gauge-top">'
+          + '<div class="gauge-verdict" style="color:'+z.color+'">'+esc(verdict)+'</div>'
+          + '<div class="gauge-note">'+esc(note)+'</div>'
+        + '</div>'
+        + '<div class="dial">'
+          + '<div class="dial-track">'
+            + ZONES.map(function(zz,i){ return '<span class="'+zz.cls+(i<=g.zone?' on':'')+'"></span>'; }).join("")
+          + '</div>'
+          + '<div class="needle" style="left:'+needleLeft.toFixed(1)+'%"></div>'
+        + '</div>'
+        + '<div class="dial-labels">'+ZONES.map(function(zz){ return '<span>'+zz.name+'</span>'; }).join("")+'</div>'
+      + '</div>'
+      + '<div class="grid4" style="border-top:1px solid var(--line)">'
+        + '<div class="stat"><div class="v">'+fmtDur(g.slept)+'</div><div class="k">slept, last 24h</div></div>'
+        + '<div class="stat"><div class="v">'+fmtDur(g.needed)+'</div><div class="k">he needs</div></div>'
+        + '<div class="stat"><div class="v"'+(g.debt>20*MIN?' style="color:var(--gremlin)"':'')+'>'
+          + (g.covered ? (g.debt>0?"−"+fmtDur(g.debt):"on target") : "—")+'</div><div class="k">sleep debt</div></div>'
+        + '<div class="stat"><div class="v">'+fmtDur(g.effective)+'</div><div class="k">awake limit now</div></div>'
+      + '</div>'
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">Today</span>'
+        + '<span class="eyebrow">'+today.length+' entries</span></div>'
+      + '<div class="grid4">'
+        + '<div class="stat"><div class="v">'+count("pee")+'</div><div class="k">pees</div></div>'
+        + '<div class="stat"><div class="v">'+count("poop")+'</div><div class="k">poops</div></div>'
+        + '<div class="stat"><div class="v">'+(sleepToday>0?fmtDur(sleepToday):"0m")+'</div><div class="k">asleep since midnight</div></div>'
+        + '<div class="stat"><div class="v">'+count("gremlin")+'</div><div class="k">gremlins confirmed</div></div>'
+      + '</div>'
+    + '</div>'
+
+    + (evs.length===0
+        ? '<div class="card" style="margin-top:14px"><div class="empty">'
+          + '<strong style="color:var(--ink)">Nothing logged yet.</strong><br>'
+          + 'Use the <strong>Activity</strong> screen every time Segundo goes, eats, sleeps or turns gremlin. '
+          + 'After about two days the predictions above switch from rules of thumb to his own rhythm.'
+          + '<div style="margin-top:12px"><button class="btn" id="seedBtn">Load an example week</button></div>'
+          + '</div></div>'
+        : '');
+
+  var sb = $("seedBtn"); if(sb) sb.onclick = seedDemo;
+}
+
+/* ============================================================
+   9. VIEW: HISTORY
+   ============================================================ */
+function renderLog(){
+  var el = $("view-log");
+  var keys = Array.from(days.keys()).sort().reverse();
+  var any = keys.some(function(k){ return (days.get(k).events||[]).length; });
+  if(!any){
+    el.innerHTML = '<div class="card" style="margin-top:14px"><div class="empty">No entries yet.</div></div>';
+    return;
+  }
+
+  var html = '<div class="card" style="margin-top:14px">';
+  keys.forEach(function(k){
+    var evs = (days.get(k).events||[]).slice().sort(function(a,b){ return b.at-a.at; });
+    if(!evs.length) return;
+    var sleepMs = sleepMsBetween(new Date(k+"T00:00:00").getTime(), new Date(k+"T00:00:00").getTime()+DAY);
+    html += '<div class="daygroup"><div class="dayhead"><span>'+esc(fmtDayLabel(k))+'</span>'
+      + '<span>'+evs.length+' entries · '+fmtDur(sleepMs)+' asleep</span></div>';
+    evs.forEach(function(e){
+      var t = TYPES[e.type]; if(!t) return;
+      var det = detailText(e);
+      html += '<button class="ev" data-ev="'+esc(e.id)+'" data-day="'+esc(k)+'">'
+        + '<span class="t">'+fmtTime(e.at)+'</span>'
+        + '<span class="mk" style="background:'+t.color+'"></span>'
+        + '<span><span class="name">'+esc(t.label)+'</span>'
+        + (det? ' <span class="det">· '+esc(det)+'</span>':'')
+        + (e.demo? ' <span class="det">· example</span>':'')
+        + '</span>'
+        + '<span class="who" data-who="'+esc(e.by||"")+'"></span>'
+        + '</button>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+
+  Array.prototype.forEach.call(el.querySelectorAll(".ev"), function(btn){
+    btn.onclick = function(){
+      var day = days.get(btn.getAttribute("data-day"));
+      var ev = (day.events||[]).filter(function(x){ return x.id===btn.getAttribute("data-ev"); })[0];
+      if(ev) openSheet(ev.type, ev);
+    };
+  });
+  paintNames(el);
+}
+function paintNames(root){
+  Array.prototype.forEach.call(root.querySelectorAll("[data-who]"), function(n){
+    var v = n.getAttribute("data-who");
+    if(v) n.textContent = (v===myId ? "you" : v);
+  });
+}
+
+/* ============================================================
+   10. VIEW: PATTERNS
+   ============================================================ */
+function clockChart(){
+  var W=680, rowH=30, rows=["pee","poop","food","gremlin"], H=rows.length*rowH+34;
+  var padL=62, padR=14, innerW=W-padL-padR;
+  var now=Date.now(), from=now-14*DAY;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" role="img" aria-label="Times of day each activity happens">';
+  for(var h=0;h<=24;h+=3){
+    var x=padL+innerW*(h/24);
+    s+='<line x1="'+x+'" y1="18" x2="'+x+'" y2="'+(H-16)+'" stroke="var(--line)" stroke-width="1"/>';
+    s+='<text class="axis" x="'+x+'" y="12" text-anchor="middle">'+pad2(h)+':00</text>';
+  }
+  rows.forEach(function(type,i){
+    var y=30+i*rowH;
+    s+='<text class="rowlab" x="'+(padL-10)+'" y="'+(y+4)+'" text-anchor="end">'+TYPES[type].label.split(" ")[0]+'</text>';
+    s+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="var(--line)" stroke-width="1"/>';
+    var list = eventsOfType(type).filter(function(e){ return e.at>=from; });
+    list.forEach(function(e){
+      var d=new Date(e.at);
+      var frac=(d.getHours()*60+d.getMinutes())/1440;
+      var x=padL+innerW*frac;
+      var age=(now-e.at)/(14*DAY);
+      var op=(0.25+0.75*(1-age)).toFixed(2);
+      s+='<circle cx="'+x.toFixed(1)+'" cy="'+y+'" r="4" fill="'+TYPES[type].color+'" opacity="'+op+'"/>';
+    });
+    if(!list.length){
+      s+='<text class="axis" x="'+(padL+innerW/2)+'" y="'+(y+4)+'" text-anchor="middle">no entries yet</text>';
+    }
+  });
+  s+='<text class="axis" x="'+padL+'" y="'+(H-3)+'">last 14 days · darker dots are more recent</text>';
+  s+='</svg>';
+  return s;
+}
+function sleepChart(){
+  var keys=[], today=startOfDay(Date.now());
+  for(var i=9;i>=0;i--) keys.push(dateKey(today-i*DAY));
+  var W=680, rowH=22, H=keys.length*rowH+36, padL=62, padR=14, innerW=W-padL-padR;
+  var s='<svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" role="img" aria-label="When Segundo was asleep each day">';
+  for(var h=0;h<=24;h+=3){
+    var x=padL+innerW*(h/24);
+    s+='<text class="axis" x="'+x+'" y="12" text-anchor="middle">'+pad2(h)+':00</text>';
+    s+='<line x1="'+x+'" y1="18" x2="'+x+'" y2="'+(H-18)+'" stroke="var(--line)" stroke-width="1"/>';
+  }
+  keys.forEach(function(k,i){
+    var y=24+i*rowH, dayStart=new Date(k+"T00:00:00").getTime();
+    s+='<text class="rowlab" x="'+(padL-10)+'" y="'+(y+11)+'" text-anchor="end">'+esc(fmtDayLabel(k).slice(0,9))+'</text>';
+    s+='<rect x="'+padL+'" y="'+y+'" width="'+innerW+'" height="14" rx="3" fill="var(--surface-2)"/>';
+    sleepBlocks.forEach(function(b){
+      var lo=Math.max(b[0],dayStart), hi=Math.min(b[1],dayStart+DAY);
+      if(hi<=lo) return;
+      var x1=padL+innerW*((lo-dayStart)/DAY), x2=padL+innerW*((hi-dayStart)/DAY);
+      s+='<rect x="'+x1.toFixed(1)+'" y="'+y+'" width="'+Math.max(1.5,x2-x1).toFixed(1)+'" height="14" rx="3" fill="var(--sleep)" opacity="0.85"/>';
+    });
+  });
+  s+='<text class="axis" x="'+padL+'" y="'+(H-4)+'">filled bars are sleep · gaps are awake time</text>';
+  s+='</svg>';
+  return s;
+}
+// Consistency over the last fortnight — a run of loose days is the kind of thing
+// that is obvious in hindsight and easy to miss day by day.
+function stoolLine(){
+  var since = Date.now()-14*DAY;
+  var rated = eventsOfType("poop").filter(function(e){ return e.at>=since && e.quality; });
+  if(!rated.length) return 'No stool consistency recorded yet — tap Normal, Soft or Diarrhea after a poop and it shows up here.';
+  var loose = rated.filter(function(e){ return e.quality==="Soft"||e.quality==="Diarrhea"; });
+  var runny = rated.filter(function(e){ return e.quality==="Diarrhea"; });
+  if(!loose.length) return 'All '+rated.length+' rated poops in the last fortnight came out normal.';
+  var last = loose[loose.length-1];
+  return '<strong style="color:var(--gremlin)">'+loose.length+'</strong> of '+rated.length
+    + ' rated poops were loose'+(runny.length? ' ('+runny.length+' outright diarrhea)':'')
+    + ', the most recent on '+esc(fmtDayLabel(dateKey(last.at)))+'.';
+}
+function walkLine(){
+  var blocks = walkBlocks().filter(function(b){ return b[0] >= Date.now()-14*DAY; });
+  if(!blocks.length) return 'No walks logged yet — tap Walk on the way out and Back home on the way in, '
+    + 'and the app records how long he was out.';
+  var durs = blocks.map(function(b){ return b[1]-b[0]; });
+  var kinds = {};
+  eventsOfType("walk").forEach(function(e){ if(e.kind) kinds[e.kind]=(kinds[e.kind]||0)+1; });
+  var named = Object.keys(kinds).sort(function(a,b){ return kinds[b]-kinds[a]; }).slice(0,3);
+  return '<strong style="color:var(--ink)">'+blocks.length+'</strong> walk'+(blocks.length>1?'s':'')
+    + ' in the last fortnight, typically '+fmtDur(median(durs))+' out'
+    + (named.length ? ' — mostly '+named.map(esc).join(', ').toLowerCase() : '') + '.';
+}
+function renderPatterns(){
+  var el=$("view-patterns");
+  var peeGaps=awakeGaps("pee",6*HOUR), poopGaps=awakeGaps("poop",12*HOUR);
+  var poops=eventsOfType("poop"), gs=eventsOfType("gremlin");
+  var daysWithData = Array.from(days.values()).filter(function(d){ return (d.events||[]).length; }).length;
+  var sleepPerDay=[];
+  var today=startOfDay(Date.now());
+  for(var i=1;i<=7;i++){
+    var s0=today-i*DAY;
+    var ms=sleepMsBetween(s0,s0+DAY);
+    if(ms>0) sleepPerDay.push(ms);
+  }
+  var accidents = allEvents().filter(function(e){
+    return (e.type==="pee"||e.type==="poop") && e.place==="Accident";
+  }).length;
+  var g = gremlinModel();
+
+  el.innerHTML =
+    '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">The numbers</span><span class="eyebrow">'+daysWithData+' days logged</span></div>'
+      + '<div class="grid4">'
+        + '<div class="stat"><div class="v">'+(peeGaps.length?fmtDur(median(peeGaps)):"—")+'</div><div class="k">typical pee gap (awake)</div></div>'
+        + '<div class="stat"><div class="v">'+(poopGaps.length?fmtDur(median(poopGaps)):"—")+'</div><div class="k">typical poop gap</div></div>'
+        + '<div class="stat"><div class="v">'+(sleepPerDay.length?fmtDur(median(sleepPerDay)):"—")+'</div><div class="k">sleep per day</div></div>'
+        + '<div class="stat"><div class="v">'+(g.learned?fmtDur(g.learned.ms):fmtDur(g.base))+'</div><div class="k">'+(g.learned?"his awake limit":"awake limit (age/size)")+'</div></div>'
+      + '</div>'
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">His clock</span><span class="eyebrow">by time of day</span></div>'
+      + '<div class="card-pad chartbox">'+clockChart()+'</div>'
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">Sleep</span><span class="eyebrow">last 10 days</span></div>'
+      + '<div class="card-pad chartbox">'+sleepChart()+'</div>'
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>What the log says so far</h3>'
+      + '<ul class="sub" style="margin:8px 0 0;padding-left:18px;line-height:1.7">'
+      + '<li>'+(peeGaps.length>=4
+          ? 'Segundo goes about <strong style="color:var(--ink)">'+fmtDur(median(peeGaps))+'</strong> of awake time between pees (middle half: '
+            + fmtDur(quantile(peeGaps,.25))+'–'+fmtDur(quantile(peeGaps,.75))+').'
+          : 'Not enough pee gaps yet — '+Math.max(0,5-peeGaps.length)+' more and the estimate becomes his, not a rule of thumb.')+'</li>'
+      + '<li>'+(poops.length>=3
+          ? 'He poops <strong style="color:var(--ink)">'+(poops.length/Math.max(1,daysWithData)).toFixed(1)+'×</strong> a day on average.'
+          : 'Log a few more poops to see his daily count.')+'</li>'
+      + '<li>'+(g.learned
+          ? 'You have confirmed gremlin mode <strong style="color:var(--ink)">'+g.learned.yes+'</strong> time'+(g.learned.yes>1?'s':'')
+            + (g.learned.no? ' and waved the alert off '+g.learned.no+' time'+(g.learned.no>1?'s':'') : '')
+            + ', so the forecast now uses his own limit of '+fmtDur(g.learned.ms)+' rather than the '+fmtDur(g.profile.baseWindowMs)+' typical for his age and size.'
+          : 'The forecast is still on the age-and-size default of '+fmtDur(g.profile.baseWindowMs)+'. '
+            + (gs.length? 'Confirm '+(3-gs.length)+' more alert'+((3-gs.length)>1?'s':'')+' and it switches to his own limit.'
+                        : 'Answer the alert when it appears and it starts learning his.'))+'</li>'
+      + '<li>'+(accidents? '<strong style="color:var(--gremlin)">'+accidents+'</strong> accident'+(accidents>1?'s':'')+' recorded.' : 'No accidents recorded.')+'</li>'
+      + '<li>'+stoolLine()+'</li>'
+      + '</ul>'
+    + '</div></div>';
+}
+
+/* ============================================================
+   11. VIEW: SETUP
+   ============================================================ */
+function renderSetup(){
+  var el=$("view-setup");
+  var g = gremlinModel(), prof = g.profile;
+  var sizes = [["small","Small — under 10 kg"],["medium","Medium — 10–25 kg"],
+               ["large","Large — 25–45 kg"],["giant","Giant — 45 kg+"]];
+  el.innerHTML =
+    '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>About the dog</h3>'
+      + '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">'
+        + '<label class="field">Name<input type="text" id="cfgName" value="'+esc(config.name)+'" style="width:150px"></label>'
+        + '<label class="field">Age in months<input type="number" id="cfgAge" min="1" max="240" value="'+esc(config.ageMonths)+'" style="width:100px"></label>'
+      + '</div>'
+      + '<div class="sheet-sec"><span class="eyebrow">Size</span><div class="chips">'
+      + sizes.map(function(s){
+          return '<button class="btn'+(config.breedSize===s[0]?' sel':'')+'" data-size="'+s[0]+'">'+esc(s[1])+'</button>';
+        }).join("")
+      + '</div></div>'
+      + '<div style="margin-top:14px"><button class="btn primary" id="cfgSave">Save</button></div>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px">'
+      + '<div class="board-head"><span class="eyebrow">What that gives him</span>'
+        + '<span class="eyebrow">'+esc(prof.band)+' · '+esc(prof.size)+'</span></div>'
+      + '<div class="grid4">'
+        + '<div class="stat"><div class="v">'+fmtDur(prof.needMs)+'</div><div class="k">sleep needed / 24h</div></div>'
+        + '<div class="stat"><div class="v">'+fmtDur(prof.baseWindowMs)+'</div><div class="k">awake limit (default)</div></div>'
+        + '<div class="stat"><div class="v">'+(g.learned?fmtDur(g.learned.ms):"—")+'</div><div class="k">awake limit (learned)</div></div>'
+        + '<div class="stat"><div class="v">'+Math.min(8,(config.ageMonths||4)+1)+'h</div><div class="k">pee rule of thumb</div></div>'
+      + '</div>'
+      + '<div class="card-pad"><p class="sub" style="margin:0">Age does most of the work here: a puppy under four months '
+      + 'needs 18–20 hours of sleep and manages roughly an hour awake at a time, stretching to 90–120 minutes at four to six months. '
+      + 'Size nudges these slightly — bigger dogs sleep a little more — but the evidence for size is much weaker than for age, '
+      + 'so it only moves the numbers by a few percent. Both are placeholders: three confirmed alerts and Segundo\'s own limit takes over.</p></div>'
+    + '</div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>Sync</h3>'
+      + (Store.isCloud()
+          ? '<p class="sub" style="margin:6px 0 0"><strong style="color:var(--calm)">Shared log, up to date.</strong> '
+            + 'Every phone that opens this address sees the same entries'
+            + (Store.lastSync() ? ' \u2014 last checked ' + fmtTime(Store.lastSync()) : '') + '.</p>'
+          : '<p class="sub" style="margin:6px 0 0"><strong style="color:var(--high)">Can\u2019t reach the server.</strong> '
+            + 'Taps are still being saved on this phone and will sync by themselves once you are back online.</p>')
+      + (Store.pending()
+          ? '<p class="sub" style="margin:8px 0 0"><strong style="color:var(--ink)">' + Store.pending()
+            + '</strong> day' + (Store.pending()>1?'s':'') + ' waiting to upload.</p>'
+          : '')
+      + '<div style="margin-top:12px"><button class="btn" id="btnSync">Check now</button></div>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>This device</h3>'
+      + '<p class="sub" style="margin:6px 0 10px">Entries are stamped with a name so you can tell who logged what. '
+      + 'Stored on this device only \u2014 each phone sets its own.</p>'
+      + '<label class="field">Your name<input type="text" id="cfgWho" placeholder="Rafa" value="'
+      + esc(myId||"") + '" style="width:160px"></label>'
+      + '<div style="margin-top:12px"><button class="btn" id="whoSave">Save name</button></div>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>Backup</h3>'
+      + '<p class="sub" style="margin:6px 0 10px">A backup is a single file holding every event. '
+      + 'Importing merges \u2014 entries already present are skipped, so running it twice is harmless.</p>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+        + '<button class="btn" id="btnExport">Download backup</button>'
+        + '<label class="btn" style="cursor:pointer;margin:0">Import backup'
+        + '<input type="file" id="fileImport" accept="application/json,.json" style="display:none"></label>'
+      + '</div>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>Who can log</h3>'
+      + '<p class="sub" style="margin:6px 0 0">Send your partner or dog sitter the address of this page \u2014 that is all '
+      + 'they need. No sign-in, nothing to set up, and they write to the same timeline you do. '
+      + 'It also means the address is the only thing protecting the log, so keep it between you.</p>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>Example data</h3>'
+      + '<p class="sub" style="margin:6px 0 10px">Loads five invented days so you can see what the predictions look like. '
+      + 'Clear it before you trust any number.</p>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+        + '<button class="btn" id="seedBtn2">Load example week</button>'
+        + '<button class="btn danger" id="clearDemo">Clear example data</button>'
+      + '</div>'
+    + '</div></div>'
+
+    + '<div class="card" style="margin-top:14px"><div class="card-pad">'
+      + '<h3>How the predictions work</h3>'
+      + '<p class="sub" style="margin:6px 0 0">Gaps are measured in <em>awake</em> time, not clock time — a bladder fills while he is up, '
+      + 'not while he naps, so the countdown pauses when you log him asleep. Each estimate is the median of his recent gaps, '
+      + 'which ignores the odd outlier better than an average. The poop estimate also watches how long after a meal he usually goes, '
+      + 'and uses whichever signal fires first.</p>'
+      + '<p class="sub" style="margin:10px 0 0">The gremlin alert is different — it is a prediction, not something you log. '
+      + 'It starts from the awake limit his age and size imply, then shortens it when he is short on sleep: the app adds up his '
+      + 'actual sleep over the last rolling 24 hours, compares it to what he needs, and takes up to a quarter off the limit when '
+      + 'he is three hours down. When you answer the alert, those answers become the model — confirmed gremlins set the ceiling, '
+      + '"he\'s fine" answers push the floor up, and after three confirmations his own limit replaces the textbook one.</p>'
+    + '</div></div>';
+
+  Array.prototype.forEach.call(el.querySelectorAll("[data-size]"), function(b){
+    b.onclick=function(){ config.breedSize=b.getAttribute("data-size"); saveConfig(); render(); };
+  });
+  $("cfgSave").onclick=function(){
+    config.name = ($("cfgName").value||"Segundo").slice(0,40);
+    config.ageMonths = Math.max(1, Math.min(240, parseInt($("cfgAge").value,10)||4));
+    saveConfig(); render(); toast("Saved");
+  };
+  $("seedBtn2").onclick=seedDemo;
+  $("clearDemo").onclick=clearDemo;
+  if($("btnSync")) $("btnSync").onclick=function(){
+    var b=this; b.disabled=true; b.textContent="Checking\u2026";
+    Store.sync().then(function(){ toast("Up to date"); render(); })
+      .catch(function(){ toast("Still can\u2019t reach the server"); render(); });
+  };
+  $("whoSave").onclick=function(){
+    window.SegundoApp.setWho($("cfgWho").value);
+    toast($("cfgWho").value.trim() ? "Saved" : "Name cleared");
+  };
+  $("btnExport").onclick=function(){
+    var blob = new Blob([JSON.stringify(window.SegundoApp.exportBackup(), null, 1)],
+                        {type:"application/json"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "segundo-backup-" + dateKey(Date.now()) + ".json";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  };
+  $("fileImport").onchange=function(){
+    var f = this.files && this.files[0]; if(!f) return;
+    var fr = new FileReader();
+    fr.onload = function(){
+      try{
+        var added = window.SegundoApp.importBackup(JSON.parse(fr.result));
+        toast(added ? added+" entries imported" : "Nothing new to import");
+      }catch(err){ toast(err.message || "Could not read that file."); }
+    };
+    fr.readAsText(f);
+    this.value = "";
+  };
+}
+
+/* ============================================================
+   12. SHEET — editing an entry
+   ============================================================ */
+var sheetState = null;
+function openSheet(type, existing){
+  var at = existing ? existing.at : Date.now();
+  var vals = {};
+  dimsOf(type).forEach(function(d){ if(existing && existing[d.k]) vals[d.k] = existing[d.k]; });
+  sheetState = { type:type, at:at, vals:vals, existing:existing||null };
+  drawSheet();
+  $("scrim").hidden=false; $("sheet").hidden=false;
+}
+function closeSheet(){ sheetState=null; $("scrim").hidden=true; $("sheet").hidden=true; }
+function drawSheet(){
+  var st=sheetState, t=TYPES[st.type];
+  var d=new Date(st.at);
+  var timeVal = pad2(d.getHours())+":"+pad2(d.getMinutes());
+  var html = '<h3>'+(st.existing?"Edit ":"")+esc(t.label)+'</h3>'
+    + '<p class="sub">'+esc(fmtDayLabel(dateKey(st.at)))+'</p>';
+
+  dimsOf(st.type).forEach(function(d){
+    html += '<div class="sheet-sec"><span class="eyebrow">'+esc(d.q)+'</span><div class="chips">'
+      + d.opts.map(function(o){
+          return '<button class="btn'+(st.vals[d.k]===o?' sel':'')+'" data-dim="'+esc(d.k)+'" data-opt="'+esc(o)+'">'
+            + esc(o)+'</button>';
+        }).join("")
+      + '</div></div>';
+  });
+  html += '<div class="sheet-sec"><span class="eyebrow">When</span>'
+    + '<div class="chips" style="margin-bottom:9px">'
+    + [0,5,15,30,60].map(function(m){
+        return '<button class="btn" data-back="'+m+'">'+(m===0?"Now":"−"+m+" min")+'</button>';
+      }).join("")
+    + '</div>'
+    + '<input type="time" id="sheetTime" value="'+timeVal+'"></div>';
+
+  html += '<div class="sheet-foot">'
+    + '<button class="btn" id="sheetCancel">Cancel</button>'
+    + (st.existing? '<button class="btn danger" id="sheetDelete">Delete</button>':'')
+    + '<button class="btn primary" id="sheetSave">'+(st.existing?"Save":"Log it")+'</button>'
+    + '</div>';
+  $("sheet").innerHTML = html;
+
+  Array.prototype.forEach.call($("sheet").querySelectorAll("[data-opt]"), function(b){
+    b.onclick=function(){
+      var k=b.getAttribute("data-dim"), v=b.getAttribute("data-opt");
+      if(sheetState.vals[k]===v) delete sheetState.vals[k]; else sheetState.vals[k]=v;
+      drawSheet();
+    };
+  });
+  Array.prototype.forEach.call($("sheet").querySelectorAll("[data-back]"), function(b){
+    b.onclick=function(){
+      sheetState.at = Date.now() - parseInt(b.getAttribute("data-back"),10)*MIN;
+      drawSheet();
+    };
+  });
+  $("sheetTime").onchange=function(){
+    var parts=this.value.split(":");
+    if(parts.length<2) return;
+    var nd=new Date(sheetState.at);
+    nd.setHours(parseInt(parts[0],10), parseInt(parts[1],10), 0, 0);
+    // A time later than now almost always means "last night", not the future.
+    if(nd.getTime() > Date.now()+5*MIN) nd.setTime(nd.getTime()-DAY);
+    sheetState.at = nd.getTime();
+    drawSheet();
+  };
+  $("sheetCancel").onclick=closeSheet;
+  if($("sheetDelete")) $("sheetDelete").onclick=function(){
+    deleteEvent(sheetState.existing); closeSheet(); toast("Deleted");
+  };
+  $("sheetSave").onclick=function(){
+    var was = sheetState.existing;
+    if(was) updateEvent(sheetState.existing, sheetState.at, sheetState.vals);
+    else addEvent(sheetState.type, sheetState.at, sheetState.vals);
+    closeSheet();
+    toast(was ? "Updated" : "Logged");
+  };
+}
+
+/* ============================================================
+   13. DOCK
+   ============================================================ */
+function renderDock(){
+  var asleep = isAsleep();
+  var buttons = [
+    {type:"pee",   icon:ICONS.pee,   label:"Pee"},
+    {type:"poop",  icon:ICONS.poop,  label:"Poop"},
+    {type:"food",  icon:ICONS.food,  label:"Food"},
+    {type: asleep?"wake":"sleep", icon: asleep?ICONS.wake:ICONS.sleep, label: asleep?"Woke up":"Asleep", on:asleep},
+    {type:"gremlin", icon:ICONS.gremlin, label:"Gremlin"}
+  ];
+  $("dock").innerHTML = buttons.map(function(b){
+    return '<button class="log-btn'+(b.on?' on':'')+'" data-type="'+b.type+'" '+(canWrite?'':'disabled style="opacity:.45"')+'>'
+      + b.icon + '<span>'+esc(b.label)+'</span></button>';
+  }).join("");
+  Array.prototype.forEach.call($("dock").querySelectorAll("[data-type]"), function(btn){
+    btn.onclick=function(){
+      var t=btn.getAttribute("data-type");
+      if(t==="sleep"||t==="wake"||t==="gremlin"){
+        addEvent(t, Date.now(), null);
+        toast(t==="sleep"?"Nap started":t==="wake"?"Awake":"Gremlin logged");
+      }
+      else openSheet(t, null);
+    };
+  });
+}
+
+/* ============================================================
+   14. DEMO DATA — clearly marked, easy to remove
+   ============================================================ */
+function seedDemo(){
+  var today=startOfDay(Date.now());
+  var rnd=function(a,b){ return a+Math.random()*(b-a); };
+  for(var d=5; d>=0; d--){
+    var base=today-d*DAY;
+    var evs=[];
+    var push=function(type,mins,detail){
+      var t = base+mins*MIN;
+      if(t > Date.now()) return;              // today stops at the current time
+      var e={id:uid(), type:type, at:t, demo:true};
+      var d0=dimsOf(type)[0]; if(d0&&detail) e[d0.k]=detail;
+      evs.push(e);
+    };
+    push("wake", rnd(400,440));
+    push("pee", rnd(403,445), "Terrace");
+    push("food", rnd(425,455), "Kibble");
+    push("poop", rnd(455,490), "Terrace");
+    push("pee", rnd(520,560), "Terrace");
+    push("gremlin", rnd(560,590));
+    push("sleep", rnd(590,610));
+    push("wake", rnd(700,740));
+    push("pee", rnd(705,745), "Downstairs");
+    push("food", rnd(760,790), "Treat");
+    push("pee", rnd(820,860), "Terrace");
+    push("sleep", rnd(860,890));
+    push("wake", rnd(950,980));
+    push("pee", rnd(955,985), "Terrace");
+    push("food", rnd(1020,1050), "Kibble");
+    push("poop", rnd(1055,1090), "Downstairs");
+    push("gremlin", rnd(1140,1175));
+    push("pee", rnd(1150,1180), "Terrace");
+    push("sleep", rnd(1190,1220));
+    evs.sort(function(a,b){ return a.at-b.at; });
+    if(!evs.length) continue;
+    (function(key,list){
+      mutateDay(key, function(cur){ return cur.concat(list).sort(function(a,b){return a.at-b.at;}); });
+    })(dateKey(base), evs);
+  }
+  toast("Example week loaded");
+}
+function clearDemo(){
+  Array.from(days.keys()).forEach(function(k){
+    if(!(days.get(k).events||[]).some(function(e){ return e.demo; })) return;
+    mutateDay(k, function(evs){ return evs.filter(function(e){ return !e.demo; }); });
+  });
+  toast("Example data cleared");
+}
+
+/* ============================================================
+   15. RENDER + WIRING
+   ============================================================ */
+function stateText(){
+  if(isStale()){
+    var t = lastEventAt();
+    return "last entry " + fmtDayLabel(dateKey(t)).toLowerCase() + " " + fmtTime(t);
+  }
+  if(staleSleep) return "sleep still running — tap Woke up";
+  if(isAsleep()){
+    var s = sleepBlocks.length ? sleepBlocks[sleepBlocks.length-1][0] : Date.now();
+    return "asleep " + fmtDur(Date.now()-s);
+  }
+  var lw = lastWakeTime();
+  return lw ? "awake " + fmtDur(Date.now()-lw) : "no sleep logged yet";
+}
+function render(){
+  buildSleep();
+  $("dogName").textContent = config.name || "Segundo";
+  $("stateLine").className = "state"+(isAsleep()?" asleep":"");
+  $("stateText").textContent = stateText();
+
+  var banner=$("demoBanner");
+  if(hasDemo()){
+    banner.hidden=false;
+    banner.className="banner";
+    banner.innerHTML='<span><strong>Example data is loaded.</strong> These are invented days, not Segundo\'s.</span>'
+      + '<button class="btn" id="bannerClear">Clear it</button>';
+    $("bannerClear").onclick=clearDemo;
+  } else { banner.hidden=true; banner.className=""; banner.innerHTML=""; }
+
+  ["actions","now","log","patterns","setup"].forEach(function(v){ $("view-"+v).hidden = (v!==view); });
+  if(view==="actions") renderActions();
+  else if(view==="now") renderNow();
+  else if(view==="log") renderLog();
+  else if(view==="patterns") renderPatterns();
+  else renderSetup();
+
+  // The Action screen is the whole point of that tab — no duplicate dock under it.
+  document.body.classList.toggle("no-dock", view==="actions");
+  document.querySelector(".dock").hidden = (view==="actions");
+  renderDock();
+}
+
+Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(tab){
+  tab.onclick=function(){
+    view = tab.getAttribute("data-view");
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+      t.setAttribute("aria-selected", t===tab ? "true":"false");
+    });
+    render();
+  };
+});
+$("scrim").onclick=closeSheet;
+document.addEventListener("keydown", function(e){ if(e.key==="Escape" && sheetState) closeSheet(); });
+
+loadLocal();
+render();
+ticker = setInterval(function(){
+  buildSleep();
+  if(view==="now" && !sheetState) renderNow();
+  else if(view==="actions" && !actionFeedback && !detailPrompt) renderActions();
+  $("stateText").textContent = stateText();
+}, 15000);
+
+/* ---- connect to the shared store ---- */
+Store.onChange(function(payload){
+  if(payload.days){ days = payload.days; }
+  if(payload.config){ config = Object.assign({name:"Segundo",ageMonths:4,breedSize:"small"}, payload.config); }
+  render();
+});
+Store.init().then(function(mode){
+  if(mode==="cloud") toast("Synced");
+}).catch(function(){ /* local mode is a fine place to land */ });
+
+window.SegundoApp = {
+  exportBackup: function(){
+    return { app:"segundos-rhythm", version:1, exportedAt:new Date().toISOString(),
+             config:config, days:Array.from(days.values()) };
+  },
+  importBackup: function(obj){
+    if(!obj || !Array.isArray(obj.days)) throw new Error("That file is not a Segundo backup.");
+    var added=0;
+    obj.days.forEach(function(d){
+      if(!d.date || !Array.isArray(d.events)) return;
+      var cur = days.get(d.date) || { date:d.date, events:[] };
+      var seen = {}; cur.events.forEach(function(e){ seen[e.id]=1; });
+      var merged = cur.events.slice();
+      d.events.forEach(function(e){ if(e && e.id && !seen[e.id]){ merged.push(e); added++; } });
+      merged.sort(function(a,b){ return a.at-b.at; });
+      days.set(d.date, { date:d.date, events:merged });
+    });
+    if(obj.config) config = Object.assign(config, obj.config);
+    saveLocal(); render();
+    Store.importAll(Array.from(days.values()), config)
+      .catch(function(){ toast("Imported here, but not synced yet."); });
+    return added;
+  },
+  whoAmI: function(){ return myId; },
+  setWho: function(name){
+    myId = (name||"").trim().slice(0,24) || null;
+    try{ localStorage.setItem("segundo-who", myId||""); }catch(e){}
+    render();
+  }
+};
+try{ myId = localStorage.getItem("segundo-who") || null; }catch(e){}
+
+})();
+</script>
+
+</body>
+</html>

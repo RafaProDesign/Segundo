@@ -1,0 +1,10 @@
+# Netlify reads this on every deploy. Nothing here needs editing.
+[build]
+  publish   = "public"
+  functions = "netlify/functions"
+
+# The app is a single page; anything unknown falls back to it.
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
