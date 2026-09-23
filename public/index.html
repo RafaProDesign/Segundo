@@ -450,7 +450,7 @@ label.field{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:va
 /* ============================================================
    1. CONSTANTS — the vocabulary of Segundo's day
    ============================================================ */
-var APP_VERSION = "1.1";
+var APP_VERSION = "1.2";
 var MIN = 60000, HOUR = 3600000, DAY = 86400000;
 
 var ICONS = {
@@ -1419,6 +1419,23 @@ function renderNow(){
 /* ============================================================
    9. VIEW: HISTORY
    ============================================================ */
+/* A list of moments does not tell you the thing you actually want to know:
+   how long was he down, and how long has he been up. So every Asleep and Awake
+   entry carries the length of the stretch it opened. Where a tap is missing —
+   two Asleeps in a row, say — it says nothing rather than inventing a number. */
+function sleepSpans(){
+  var evs = allEvents().filter(function(e){ return e.type==="sleep" || e.type==="wake"; });
+  var out = {};
+  evs.forEach(function(e, i){
+    var nxt = evs[i+1] || null;
+    if(nxt && nxt.type === e.type) return;          // a missed tap: do not guess
+    var ms = (nxt ? nxt.at : Date.now()) - e.at;
+    if(ms <= 0 || ms > 20*HOUR) return;             // stale or nonsense
+    out[e.id] = (e.type==="sleep" ? "slept " : "awake ") + fmtDur(ms) + (nxt ? "" : " so far");
+  });
+  return out;
+}
+
 function renderLog(){
   var el = $("view-log");
   var keys = Array.from(days.keys()).sort().reverse();
@@ -1428,16 +1445,24 @@ function renderLog(){
     return;
   }
 
+  var spans = sleepSpans();
   var html = '<div class="card" style="margin-top:14px">';
   keys.forEach(function(k){
     var evs = (days.get(k).events||[]).slice().sort(function(a,b){ return b.at-a.at; });
     if(!evs.length) return;
-    var sleepMs = sleepMsBetween(new Date(k+"T00:00:00").getTime(), new Date(k+"T00:00:00").getTime()+DAY);
+    var dayStart = new Date(k+"T00:00:00").getTime();
+    var dayEnd   = Math.min(dayStart + DAY, Date.now());
+    var sleepMs  = sleepMsBetween(dayStart, dayStart + DAY);
+    // Count awake time from the day's first entry, not from midnight: before
+    // anyone logged anything the app knows nothing, and assuming "awake" there
+    // turns a quiet night into fifteen waking hours.
+    var firstAt  = evs.length ? evs[evs.length-1].at : dayStart;
+    var awakeMs  = awakeMsBetween(Math.max(dayStart, firstAt), dayEnd);
     html += '<div class="daygroup"><div class="dayhead"><span>'+esc(fmtDayLabel(k))+'</span>'
-      + '<span>'+evs.length+' entries · '+fmtDur(sleepMs)+' asleep</span></div>';
+      + '<span>'+fmtDur(sleepMs)+' asleep · '+fmtDur(awakeMs)+' awake</span></div>';
     evs.forEach(function(e){
       var t = TYPES[e.type]; if(!t) return;
-      var det = detailText(e);
+      var det = detailText(e) || spans[e.id] || "";
       html += '<button class="ev" data-ev="'+esc(e.id)+'" data-day="'+esc(k)+'">'
         + '<span class="t">'+fmtTime(e.at)+'</span>'
         + '<span class="mk" style="background:'+t.color+'"></span>'
