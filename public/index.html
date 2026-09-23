@@ -599,10 +599,18 @@ function mutateDay(key, mutate){
   days.set(key, { date:key, events:after });
   render();
   saveLocal();
+
+  // Send only what actually changed. Sending the whole day would let this
+  // device re-upload entries another device has since deleted.
+  var was = {};
+  before.forEach(function(e){ was[e.id] = JSON.stringify(e); });
+  var upserts = after.filter(function(e){ return was[e.id] !== JSON.stringify(e); });
+
   var kept = {};
   after.forEach(function(e){ kept[e.id] = 1; });
   var removed = before.filter(function(e){ return !kept[e.id]; }).map(function(e){ return e.id; });
-  return Store.saveDay(key, after, removed);
+
+  return Store.saveDay(key, upserts, removed);
 }
 function saveConfig(){
   saveLocal();
@@ -1834,6 +1842,7 @@ ticker = setInterval(function(){
 Store.onChange(function(payload){
   if(payload.days){ days = payload.days; }
   if(payload.config){ config = Object.assign({name:"Segundo",ageMonths:4,breedSize:"small"}, payload.config); }
+  saveLocal();     // keep the offline mirror in step with what we are showing
   render();
 });
 Store.init().then(function(mode){
